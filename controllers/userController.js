@@ -10,7 +10,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const userExists = await User.findOne({ email })
     const saltRounds = 10;
     if (userExists) {
-		res.status(400)
+		res.status(403)
 		throw new Error('User already exist.')
 	}
     else{

@@ -13,7 +13,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
     const adminExists = await Admin.findOne({ email })
     const saltRounds = 10;
     if (adminExists) {
-		res.status(400)
+		res.status(403)
 		throw new Error('Admin already exist.')
 	}
     else{

@@ -11,7 +11,7 @@ const registerDesigner = asyncHandler(async (req, res) => {
     const designerExists = await Designer.findOne({ email })
     const saltRounds = 10;
     if (designerExists) {
-		res.status(400)
+		res.status(403)
 		throw new Error('Designer already exist.')
 	}
     else{
