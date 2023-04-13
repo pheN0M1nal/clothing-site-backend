@@ -11,8 +11,11 @@ const registerDesigner = asyncHandler(async (req, res) => {
     const designerExists = await Designer.findOne({ email })
     const saltRounds = 10;
     if (designerExists) {
-		res.status(403)
-		throw new Error('Designer already exist.')
+        res.json({
+
+            err: "Designer already exist"
+        })
+        throw new Error('Designer already exist.')
 	}
     else{
         bcrypt.genSalt(saltRounds, function(err, salt) {
@@ -39,6 +42,7 @@ const registerDesigner = asyncHandler(async (req, res) => {
                         accountName: accountName,
                         bankName: bankName,
                         accountNo: accountNo,
+                        userType: "Designer",
                         token: generateToken(result.id)})
                 })
                 .catch((err) => {
@@ -68,6 +72,7 @@ const loginDesigner = asyncHandler(async (req, res) => {
                 accountName: desiner.accountName,
                 bankName: desiner.bankName,
                 accountNo: desiner.accountNo,
+                userType: "Designer",
                 token: generateToken(result.id)
             })
         }
