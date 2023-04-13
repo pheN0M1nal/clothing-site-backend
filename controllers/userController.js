@@ -33,6 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
                         myName: myName,
                         email: email,
                         id: result.id,
+                        userType: "Costumer",
                         token: generateToken(result.id)})
                 })
                 .catch((err) => {
@@ -60,6 +61,7 @@ const loginUser = asyncHandler(async (req, res) => {
                 myName: user.myName,
                 email: user.email,
                 id: user.id,
+                userType: "Costumer",
                 token: generateToken(user.id)
                 
             })

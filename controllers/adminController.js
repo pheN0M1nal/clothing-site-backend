@@ -37,6 +37,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
                         myName: myName,
                         email: email,
                         id: result.id,
+                        userType: "Admin",
                         token: generateToken(result.id)})
                         
                 })
@@ -65,6 +66,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
                 myName: admin.myName,
                 email: admin.email,
                 id: admin.id,
+                userType: "Admin",
                 token: generateToken(admin.id)
                 
             })
