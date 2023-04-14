@@ -53,9 +53,12 @@ const registerUser = asyncHandler(async (req, res) => {
     
 
 const loginUser = asyncHandler(async (req, res) => {
+    console.log("User Login")
 
     const { email, password } = req.body
+    console.log(email)
 	const user = await User.findOne({ email })
+    console.log(user)
     flag = false;
     if (user){
         const flag = await bcrypt.compare(password, user.password);
@@ -87,6 +90,7 @@ const loginUser = asyncHandler(async (req, res) => {
 const allUsers = asyncHandler(async (req, res) => {
     
     User.find({}).then(function (users) {
+        console.log(users.length)
         res.send(users);
     })
 

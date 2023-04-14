@@ -24,10 +24,9 @@ mongoose
     })
     .catch((err) => console.log(err))
 
+
+
 app.use("/api/users", require("./routes/usersRoutes"))
 app.use("/api/products", require("./routes/productsRoutes"))
 app.use("/api/admins", require("./routes/adminRoutes"))
-app.use("/", (req, res) => {
-    res.send("<h1>Lets marry soon.</h1>")
-})
 app.use("/api/designers", require("./routes/designerRoutes"))

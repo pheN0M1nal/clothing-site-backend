@@ -59,6 +59,7 @@ const registerDesigner = asyncHandler(async (req, res) => {
 const loginDesigner = asyncHandler(async (req, res) => {
 
     const { email, password } = req.body
+    console.log("Designer Login")
 	const desiner = await Designer.findOne({ email })
     flag = false;
     if (desiner){

@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { registerAdmin, loginAdmin, deleteAdmin, deleteDesigner,
+const { registerAdmin, loginAdmin, deleteAdmin, deleteDesigner, deleteUser,
      getAllAdmins, getAllUsers, getAllDesigners } =  require('../controllers/adminController')
 
 
 router.post('/registerAdmin', registerAdmin)
 router.post('/loginAdmin', loginAdmin)
 router.delete('/deleteAdmin/:id', deleteAdmin)
-router.delete('/deleteDesigner', deleteDesigner)
+router.delete('/deleteDesigner/:id', deleteDesigner)
+router.delete('/deleteUser/:id', deleteUser)
 router.get('/allAdmins', getAllAdmins)
 router.get('/allUsers', getAllUsers)
 router.get('/allDesigners', getAllDesigners)

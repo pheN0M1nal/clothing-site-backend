@@ -87,7 +87,7 @@ const loginAdmin = asyncHandler(async (req, res) => {
 	}
 })
 
-
+//deleteAdmin
 const deleteAdmin = asyncHandler(async (req, res) => {
 
     const admin = await Admin.findById(req.params.id)
@@ -101,6 +101,7 @@ const deleteAdmin = asyncHandler(async (req, res) => {
     }
 })
 
+//deleteDesigner
 const deleteDesigner = asyncHandler(async (req, res) => {
     const designer = await Designer.findById(req.params.id)
     if (designer) {
@@ -113,6 +114,19 @@ const deleteDesigner = asyncHandler(async (req, res) => {
     }
 })
   
+//deleteUser
+const deleteUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id)
+    if (user) {
+        await user.remove()
+        res.json({ message: 'User removed.' })
+    } 
+    else {
+        res.status(404)
+        throw new Error('User not found')
+    }
+})
+
 //All admins
 const getAllAdmins = asyncHandler(async (req, res) => {
     const limit = Number(req.query.limit) || 10
@@ -156,4 +170,4 @@ const getAllDesigners = asyncHandler(async (req, res) => {
 })
 
 module.exports = {registerAdmin, loginAdmin, deleteAdmin, 
-    deleteDesigner, getAllAdmins, getAllUsers, getAllDesigners}
+    deleteDesigner, deleteUser, getAllAdmins, getAllUsers, getAllDesigners}
