@@ -4,17 +4,13 @@ const asyncHandler = require('express-async-handler')
 const bcrypt = require('bcrypt')
 const { generateToken } = require('../utilities/jwt.js') 
 
-
 const registerDesigner = asyncHandler(async (req, res) => {
 
     const {myName, email, password, accountName, bankName, accountNo}  = req.body
     const designerExists = await Designer.findOne({ email })
     const saltRounds = 10;
     if (designerExists) {
-        res.json({
 
-            err: "Designer already exist"
-        })
         throw new Error('Designer already exist.')
 	}
     else{
@@ -90,6 +86,75 @@ const loginDesigner = asyncHandler(async (req, res) => {
 	}
 })
 
+//createShop
+
+const createShop = asyncHandler(async (req, res) => {
+
+})
+
+
+//AddProductToShop
+const addProductToShop = asyncHandler (async (req, res) => {
+
+    console.log('Creating product')
+    console.log(process.env.IMAGE_UPLOAD_DIR)
+    const path_ = path.join(path.resolve(), '../uploads/images')
+    console.log('Path :', path_)
+    let form = new multiparty.Form({
+        autoFiles: true,
+        uploadDir: path_
+    })
+    
+    form.parse(req, async function(err, fields, files){
+        if(err) return res.send({error: err.message})
+
+        console.log('fields = ' + JSON.stringify(fields, null, 2))
+        console.log('files = ' + JSON.stringify(files, null, 2))
+        
+        var img_ = []
+        for (img in files.image){
+            
+            const imagePath = files.image[0].path
+            const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
+            img_.push("http://localhost:5000/images/" + fileName)
+        
+        }
+
+        const product = Product({
+            productName: fields.productName[0], 
+            image: img_, 
+            category: fields.category[0], 
+            price: fields.price[0], 
+            description: fields.description[0], 
+            quantity: fields.quantity, 
+            size: fields.size,
+            reviews: [],
+            avgRating: 0,
+            noOfReviews: 0,
+            noOfSales: 0
+
+        })
+    
+        await Shop.Product.save(product)
+        .then((result) => {
+            res.json({
+                "product": product 
+            })
+        })
+        .catch((err) => {
+            console.log(err)
+            res.status(400).json({
+                "Error": err 
+            })
+    
+            throw new Error('err')
+        })
+    
+
+    })
+})
+
+
 //AllProducts
 const allProduct = asyncHandler(async (req, res) => {
     const id = req.params.id
@@ -108,4 +173,4 @@ const allProduct = asyncHandler(async (req, res) => {
     }
 })
 
-module.exports = {registerDesigner, loginDesigner, allProduct}
+module.exports = {registerDesigner, loginDesigner, allProduct, addProductToShop}
