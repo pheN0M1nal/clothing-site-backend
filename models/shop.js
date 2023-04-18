@@ -10,6 +10,8 @@ const ShopSchema = mongoose.Schema(
         },
         shopName: {
             type: String,
+            required: true, 
+            unique: 'The shopName is already taken',
             default: ""
         },
         shopDescription: {
@@ -17,7 +19,7 @@ const ShopSchema = mongoose.Schema(
             default: ""
         },
         products: [Product],
-        order: [Order]
+        orders: [Order]
     },
     {
         timestamps: true

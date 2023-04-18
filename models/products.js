@@ -35,15 +35,22 @@ const productsSchema = mongoose.Schema(
             type: [String],
             required: true
         },
-        reviews: [Review],
+        reviews: {
+            type: [Review],
+            default: []
+        },
         avgRating: {
-            type: Number
+            type:{type:Number},
+            default: 0
         },    
         noOfReviews: {
-            type: Number
+            type:{type:Number},
+            default: 0
         },
         noOfSales: {
-            type: Number
+            type:{type:Number},
+            default: 0
+
         }
     },
     {

@@ -20,14 +20,15 @@ const designersSchema = mongoose.Schema(
             required: true
         },
         shop: {
-            Shop
+            type: Shop,
+            default: null
         },
         accountName: {
             type: String,
             required: true
         },
         bankName: {
-            type: Number,
+            type: String,
             required: true
         },
         accountNo: {
@@ -36,21 +37,16 @@ const designersSchema = mongoose.Schema(
         },
         totalNoOfOrders: {
             type: Number,
-            required: true,
             default: 0
         },
         totalSales: {
             type: Number,
-            required: true,
             default: 0
         },
         avdRatingOfProducts: {
             type: Number,
-            required: true,
             default: 0
         }
-
-
     },    
     {
         timestamps: true

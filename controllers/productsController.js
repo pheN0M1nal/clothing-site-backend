@@ -54,11 +54,7 @@ const createProduct = asyncHandler (async (req, res) => {
         })
         .catch((err) => {
             console.log(err)
-            res.status(400).json({
-                "Error": err 
-            })
-    
-            throw new Error('err')
+            throw new Error(err)
         })
     
 
@@ -75,7 +71,6 @@ const deleteProduct = asyncHandler(async (req, res) => {
         res.json({ message: 'Product removed.' })
     } 
     else {
-        res.status(404)
         throw new Error('Product not found')
     }
 })
@@ -106,16 +101,14 @@ const updateProduct = asyncHandler(async (req, res) => {
             })
         }
         catch(err){
-            res.status(400).json({
-                "err": err
-            })
-            
+
+            throw new Error(err)
+
         }
 
     }
     else {
 
-        res.status(404)
         throw new Error('Product not found')
 
     }
@@ -134,7 +127,6 @@ const getProductsByDesinerID = asyncHandler(async (req, res) => {
         })
     }
     else{
-        res.status(400)
         throw new Error('Unable to get the products')
     }
 })
@@ -150,7 +142,7 @@ const getProductById = asyncHandler(async (req, res) => {
         })
     }
     else{
-        res.status(400)
+
         throw new Error('Unable to get the products')
     }
 })
@@ -165,7 +157,6 @@ const getProductByCategory = asyncHandler(async (req, res) => {
         })
     }
     else{
-        res.status(400)
         throw new Error('Unable to get the products')
     }
 })
@@ -200,15 +191,13 @@ const placeRating = asyncHandler(async (req,res) => {
             })
         }
         catch(err){
-            res.status(400).json({
-                "err": err
-            })
-            
+
+            throw new Error(err)
+
         }
     }
     else {
 
-        res.status(404)
         throw new Error('Product not found')
 
     }

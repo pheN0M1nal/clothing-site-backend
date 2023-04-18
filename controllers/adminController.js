@@ -43,7 +43,6 @@ const registerAdmin = asyncHandler(async (req, res) => {
                 })
                 .catch((err) => {
                     console.log(err)
-                    res.status(400)
                     throw new Error(err)
                 })
             });
@@ -72,15 +71,15 @@ const loginAdmin = asyncHandler(async (req, res) => {
             })
         }
         else {
-            res.status(401)
+
             throw new Error('Invalid Password')
             
         }
 
     }
 	else {
-		res.status(401)
-		throw new Error('Invalid Email')
+
+        throw new Error('Invalid Email')
 	}
 })
 
@@ -93,7 +92,7 @@ const deleteAdmin = asyncHandler(async (req, res) => {
         res.json({ message: 'Admin removed.' })
     } 
     else {
-        res.status(404)
+
         throw new Error('Admin not found')
     }
 })
@@ -106,7 +105,7 @@ const deleteDesigner = asyncHandler(async (req, res) => {
         res.json({ message: 'Designer removed.' })
     } 
     else {
-        res.status(404)
+
         throw new Error('Designer not found')
     }
 })
@@ -119,7 +118,7 @@ const deleteUser = asyncHandler(async (req, res) => {
         res.json({ message: 'User removed.' })
     } 
     else {
-        res.status(404)
+
         throw new Error('User not found')
     }
 })

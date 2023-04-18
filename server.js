@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const dotenv = require("dotenv")
 var cors = require("cors")
 
+
 const app = express()
 dotenv.config()
 
@@ -15,11 +16,13 @@ app.use("/images", express.static("./uploads/images"))
 
 const dbURL = process.env.DBCONNECTION
 mongoose.set("strictQuery", false)
+const db = "test"
 
 mongoose
     .connect(dbURL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then((result) => {
         app.listen(5000)
+
         console.log("Listening to port 5000 and database is connected!")
     })
     .catch((err) => console.log(err))

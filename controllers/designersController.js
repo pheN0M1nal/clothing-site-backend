@@ -43,7 +43,6 @@ const registerDesigner = asyncHandler(async (req, res) => {
                 })
                 .catch((err) => {
                     console.log(err)
-                    res.status(400)
                     throw new Error(err)
                 })
             });
@@ -74,14 +73,14 @@ const loginDesigner = asyncHandler(async (req, res) => {
             })
         }
         else {
-            res.status(401)
+
             throw new Error('Invalid Password')
             
         }
 
     }
 	else {
-		res.status(401)
+
 		throw new Error('Invalid Email')
 	}
 })
@@ -89,6 +88,31 @@ const loginDesigner = asyncHandler(async (req, res) => {
 //createShop
 
 const createShop = asyncHandler(async (req, res) => {
+    const {shopName, shopDescription} = req.body
+    const id = req.params.id
+    const designer = await Designer.findById(id)
+    const shop = new Shop({
+        shopName: shopName,
+        shopDescription: shopDescription,
+        products: [],
+        orders: []
+    })
+
+
+    designer.shop = shop
+
+    try{
+        await designer.save()
+        res.json({
+            "designer": designer
+        })
+    }
+    catch(err){
+
+        throw new Error(err)
+
+    }
+    
 
 })
 
@@ -143,11 +167,8 @@ const addProductToShop = asyncHandler (async (req, res) => {
         })
         .catch((err) => {
             console.log(err)
-            res.status(400).json({
-                "Error": err 
-            })
     
-            throw new Error('err')
+            throw new Error(err)
         })
     
 
@@ -168,9 +189,9 @@ const allProduct = asyncHandler(async (req, res) => {
         })
     }
     else{
-        res.status(400)
+
         throw new Error('Unable to get the products')
     }
 })
 
-module.exports = {registerDesigner, loginDesigner, allProduct, addProductToShop}
+module.exports = {registerDesigner, loginDesigner, createShop, allProduct, addProductToShop}

@@ -38,7 +38,6 @@ const registerUser = asyncHandler(async (req, res) => {
                 })
                 .catch((err) => {
                     console.log(err)
-                    res.status(400)
                     throw new Error(err)
                 })
             });
@@ -70,15 +69,14 @@ const loginUser = asyncHandler(async (req, res) => {
             })
         }
         else {
-            res.status(401)
             throw new Error('Invalid Password')
             
         }
 
     }
 	else {
-		res.status(401)
-		throw new Error('Invalid Email')
+
+        throw new Error('Invalid Email')
 	}
 })
 
