@@ -7,16 +7,19 @@ const OrderSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             auto: true
         },
+        designer : {
+            type : String,
+            required : true
+        },
         customer: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+            ref: 'users',
             required: true
         },
-        products: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Product',
+        products: {
+            type: [String],
             required: true
-        }],
+        },
         price: {
             type: Number,
             required: true,

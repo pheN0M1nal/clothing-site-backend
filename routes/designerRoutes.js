@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { registerDesigner, loginDesigner, createShop, allProduct, addProductToShop } =  require('../controllers/designersController')
+const { registerDesigner, loginDesigner, allProductofDesigners, topRatedDesigners } =  require('../controllers/designersController')
 
 
 router.post('/registerDesigner', registerDesigner)
-router.post('/addProductToShop', addProductToShop)
-router.put('/createShop/:id', createShop)
 router.post('/loginDesigner', loginDesigner)
-router.get('/allProduct', allProduct)
+router.get('/allProduct/:id', allProductofDesigners)
+router.get('/topRatedDesigners', topRatedDesigners)
 
 
 module.exports = router;

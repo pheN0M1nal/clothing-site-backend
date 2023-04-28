@@ -30,6 +30,9 @@ mongoose
 
 
 app.use("/api/users", require("./routes/usersRoutes"))
-app.use("/api/products", require("./routes/productsRoutes"))
 app.use("/api/admins", require("./routes/adminRoutes"))
 app.use("/api/designers", require("./routes/designerRoutes"))
+app.use("/api/products", require("./routes/productsRoutes"))
+app.use("/api/reviews", require("./routes/reviewsRoutes"))
+app.use("/api/shops", require("./routes/shopsRoutes"))
+app.use("/api/orders", require("./routes/ordersRoutes"))

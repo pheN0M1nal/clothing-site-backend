@@ -19,10 +19,6 @@ const designersSchema = mongoose.Schema(
             type: String,
             required: true
         },
-        shop: {
-            type: Shop,
-            default: null
-        },
         accountName: {
             type: String,
             required: true
@@ -43,7 +39,7 @@ const designersSchema = mongoose.Schema(
             type: Number,
             default: 0
         },
-        avdRatingOfProducts: {
+        avgRatingOfProducts: {
             type: Number,
             default: 0
         }

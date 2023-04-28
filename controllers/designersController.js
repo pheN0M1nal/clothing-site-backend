@@ -85,99 +85,50 @@ const loginDesigner = asyncHandler(async (req, res) => {
 	}
 })
 
-//createShop
+const highestRating = asyncHandler(async (req, res) => {
+    console.log("hello")
 
-const createShop = asyncHandler(async (req, res) => {
-    const {shopName, shopDescription} = req.body
-    const id = req.params.id
-    const designer = await Designer.findById(id)
-    const shop = new Shop({
-        shopName: shopName,
-        shopDescription: shopDescription,
-        products: [],
-        orders: []
-    })
+    const designer = await Designer.find({}).sort({ avgRatingOfProducts:-1}).limit(1)
 
+    return designer
+})
 
-    designer.shop = shop
+const highestSales = asyncHandler(async (req, res) => {
+    console.log("hello")
 
+    const designer = await Designer.find({}).sort({ totalSales:-1}).limit(1)
+
+    return designer
+})
+
+const highestProducts = asyncHandler(async (req, res) => {
+    console.log("hello")
+
+    const designer = await Designer.find({}).sort({ totalNoOfOrders:-1}).limit(1)
+
+    return designer
+})
+
+const topRatedDesigners = asyncHandler(async (req, res) => {
     try{
-        await designer.save()
+        const maxRatingDesigner = await highestRating()
+        const maxSalesDesigner =  await highestSales()
+        const maxProductSalesDesigner = await highestProducts()
+    
         res.json({
-            "designer": designer
+            "maxRatingDesigner": maxRatingDesigner,
+            "maxSalesDesigner": maxSalesDesigner,
+            "maxProductSalesDesigner": maxProductSalesDesigner
         })
     }
     catch(err){
-
         throw new Error(err)
-
     }
-    
 
 })
-
-
-//AddProductToShop
-const addProductToShop = asyncHandler (async (req, res) => {
-
-    console.log('Creating product')
-    console.log(process.env.IMAGE_UPLOAD_DIR)
-    const path_ = path.join(path.resolve(), '../uploads/images')
-    console.log('Path :', path_)
-    let form = new multiparty.Form({
-        autoFiles: true,
-        uploadDir: path_
-    })
-    
-    form.parse(req, async function(err, fields, files){
-        if(err) return res.send({error: err.message})
-
-        console.log('fields = ' + JSON.stringify(fields, null, 2))
-        console.log('files = ' + JSON.stringify(files, null, 2))
-        
-        var img_ = []
-        for (img in files.image){
-            
-            const imagePath = files.image[0].path
-            const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
-            img_.push("http://localhost:5000/images/" + fileName)
-        
-        }
-
-        const product = Product({
-            productName: fields.productName[0], 
-            image: img_, 
-            category: fields.category[0], 
-            price: fields.price[0], 
-            description: fields.description[0], 
-            quantity: fields.quantity, 
-            size: fields.size,
-            reviews: [],
-            avgRating: 0,
-            noOfReviews: 0,
-            noOfSales: 0
-
-        })
-    
-        await Shop.Product.save(product)
-        .then((result) => {
-            res.json({
-                "product": product 
-            })
-        })
-        .catch((err) => {
-            console.log(err)
-    
-            throw new Error(err)
-        })
-    
-
-    })
-})
-
 
 //AllProducts
-const allProduct = asyncHandler(async (req, res) => {
+const allProductofDesigners = asyncHandler(async (req, res) => {
     const id = req.params.id
     const shop = await Shop.find({designer: id})
     if(shop){
@@ -194,4 +145,4 @@ const allProduct = asyncHandler(async (req, res) => {
     }
 })
 
-module.exports = {registerDesigner, loginDesigner, createShop, allProduct, addProductToShop}
+module.exports = {registerDesigner, loginDesigner, allProductofDesigners, topRatedDesigners}

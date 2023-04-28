@@ -7,6 +7,10 @@ const productsSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             auto: true
         },
+        designerID : {
+            type : String,
+            required : true
+        },
         productName: {
             type: String,
             required: true
@@ -34,10 +38,6 @@ const productsSchema = mongoose.Schema(
         size: {
             type: [String],
             required: true
-        },
-        reviews: {
-            type: [Review],
-            default: []
         },
         avgRating: {
             type:{type:Number},

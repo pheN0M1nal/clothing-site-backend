@@ -6,9 +6,13 @@ const reviewSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             auto: true
         },
-        userID: {
-            type: String,
-            required: true
+        product : {
+            type : String,
+            required : true
+        },
+        user : {
+            type : String,
+            required : true
         },
         rating: {
             type: String,

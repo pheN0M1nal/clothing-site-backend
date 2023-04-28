@@ -8,6 +8,10 @@ const ShopSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             auto: true
         },
+        designerID : {
+            type : String,
+            required : true
+        },
         shopName: {
             type: String,
             required: true, 
@@ -18,8 +22,6 @@ const ShopSchema = mongoose.Schema(
             type: String,
             default: ""
         },
-        products: [Product],
-        orders: [Order]
     },
     {
         timestamps: true

@@ -9,7 +9,7 @@ const createProduct = asyncHandler (async (req, res) => {
 
     console.log('Creating product')
     console.log(process.env.IMAGE_UPLOAD_DIR)
-    const path_ = path.join(path.resolve(), '/backend/uploads/images')
+    const path_ = path.join(path.resolve(), 'IMAGE_UPLOAD_DIR')
     console.log('Path :', path_)
     let form = new multiparty.Form({
         autoFiles: true,
@@ -32,6 +32,7 @@ const createProduct = asyncHandler (async (req, res) => {
         }
 
         const product = Product({
+            designerID: fields.designerID[0],
             productName: fields.productName[0], 
             image: img_, 
             category: fields.category[0], 
@@ -39,7 +40,6 @@ const createProduct = asyncHandler (async (req, res) => {
             description: fields.description[0], 
             quantity: fields.quantity, 
             size: fields.size,
-            reviews: [],
             avgRating: 0,
             noOfReviews: 0,
             noOfSales: 0
@@ -49,7 +49,7 @@ const createProduct = asyncHandler (async (req, res) => {
         await product.save()
         .then((result) => {
             res.json({
-                "product": product 
+                "product": result 
             })
         })
         .catch((err) => {
@@ -118,9 +118,12 @@ const updateProduct = asyncHandler(async (req, res) => {
 })
 
 
-const getProductsByDesinerID = asyncHandler(async (req, res) => {
+const getProductsByDesignerID = asyncHandler(async (req, res) => {
     const id = req.params.id
     const products = await Product.find({designerID: id})
+    console.log(id)
+    console.log(products)
+
     if(products){
         res.json({
             products
@@ -160,7 +163,7 @@ const getProductByCategory = asyncHandler(async (req, res) => {
         throw new Error('Unable to get the products')
     }
 })
-
+ 
 const getAllProducts = asyncHandler(async (req, res) => {
     const limit = Number(req.query.limit) || 10
     const page = Number(req.query.page) || 1
@@ -204,4 +207,4 @@ const placeRating = asyncHandler(async (req,res) => {
 })
 
 module.exports = {createProduct, deleteProduct, getProductById, updateProduct,
-                    getProductsByDesinerID, getProductByCategory, getAllProducts, placeRating}
+                    getProductsByDesignerID, getProductByCategory, getAllProducts, placeRating}
