@@ -14,7 +14,7 @@ const registerAdmin = asyncHandler(async (req, res) => {
     const saltRounds = 10;
     if (adminExists) {
         
-        throw new Error('Admin already exist.')
+        throw Error('Admin already exist.')
 	}
     else{
         
@@ -81,6 +81,18 @@ const loginAdmin = asyncHandler(async (req, res) => {
 
         throw new Error('Invalid Email')
 	}
+})
+
+const updateaAdmin = asyncHandler(async (req, res) => {
+    const {myName, email, password}  = req.body
+    const admin = Admin.findOne(email)
+
+    if(admin){
+        admin.myName = myName
+        admin.email = email
+        admin.password = password
+
+    }
 })
 
 //deleteAdmin
