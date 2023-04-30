@@ -14,7 +14,10 @@ const registerAdmin = asyncHandler(async (req, res) => {
     const saltRounds = 10;
     if (adminExists) {
         
-        throw Error('Admin already exist.')
+        res.json({
+            Error: "Admin already exist"
+        })
+            
 	}
     else{
         
