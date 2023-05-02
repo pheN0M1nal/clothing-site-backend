@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { createProduct, deleteProduct, getProductById, updateProduct, 
         getProductsByDesignerID, getProductByCategory, getAllProducts, 
-        placeRating } =  require('../controllers/productsController')
+        placeRating, searchProducts, topProducts } =  require('../controllers/productsController')
 
 
 router.post('/createProduct', createProduct)
@@ -13,5 +13,7 @@ router.get('/getProductsByDesignerID/:id', getProductsByDesignerID)
 router.get('/getProductByCategory/:category', getProductByCategory)
 router.get('/getAllProducts', getAllProducts)
 router.put('/placeRating/:id/:rating', placeRating)
+router.get('/searchProducts', searchProducts)
+router.get('/topProducts', topProducts)
 
 module.exports = router;

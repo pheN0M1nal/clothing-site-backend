@@ -163,6 +163,7 @@ const getProductByCategory = asyncHandler(async (req, res) => {
         throw new Error('Unable to get the products')
     }
 })
+
  
 const getAllProducts = asyncHandler(async (req, res) => {
     const limit = Number(req.query.limit) || 10
@@ -206,5 +207,40 @@ const placeRating = asyncHandler(async (req,res) => {
     }
 })
 
+const searchProducts = asyncHandler(async (req, res) => {
+    const pageSize = 10
+    const page = Number(req.query.pageNumber) || 1
+    const keyword = req.query.keyword
+      ? {
+        productName: {
+            $regex: req.query.keyword,
+            $options: 'i',
+          },
+        }
+      : {}
+  
+    const count = await Product.countDocuments({ ...keyword })
+    const products = await Product.find({ ...keyword })
+      .limit(pageSize)
+      .skip(pageSize * (page - 1))
+    res.json({ products, page, pages: Math.ceil(count / pageSize) })
+})
+
+const topProducts = asyncHandler(async (req, res) => {
+
+    const limit = Number(req.query.limit) || 10
+
+    const page = Number(req.query.page) || 1
+
+    var skip = (page - 1) * limit
+
+    const products = await Product.find({ avgRating: { $gt: 3 } }).sort({avgRating: -1}).limit(10)
+
+    
+    res.json({
+        products: products
+    })
+})
+
 module.exports = {createProduct, deleteProduct, getProductById, updateProduct,
-                    getProductsByDesignerID, getProductByCategory, getAllProducts, placeRating}
+                    getProductsByDesignerID, getProductByCategory, getAllProducts, placeRating, searchProducts, topProducts}

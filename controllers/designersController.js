@@ -145,4 +145,6 @@ const allProductofDesigners = asyncHandler(async (req, res) => {
     }
 })
 
+
+
 module.exports = {registerDesigner, loginDesigner, allProductofDesigners, topRatedDesigners}
