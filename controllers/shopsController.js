@@ -23,7 +23,7 @@ const createShop = asyncHandler(async (req, res) => {
         }
         catch(err){
     
-            throw new Error(err)
+            res.status(400).json({message: err})
     
         }
     

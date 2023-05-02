@@ -54,7 +54,7 @@ const createProduct = asyncHandler (async (req, res) => {
         })
         .catch((err) => {
             console.log(err)
-            throw new Error(err)
+            res.status(400).json({message: err})
         })
     
 
@@ -68,10 +68,11 @@ const deleteProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id)
     if (product) {
         await product.remove()
-        res.json({ message: 'Product removed.' })
+        res.status(400).json({ message: 'Product removed.' })
     } 
     else {
-        throw new Error('Product not found')
+        res.status(400).json({message: 'Product not found'})
+
     }
 })
 
@@ -102,14 +103,14 @@ const updateProduct = asyncHandler(async (req, res) => {
         }
         catch(err){
 
-            throw new Error(err)
+            res.status(400).json({message: err})
 
         }
 
     }
     else {
 
-        throw new Error('Product not found')
+        res.status(400).json({message: 'Product not found'})
 
     }
 
@@ -130,7 +131,8 @@ const getProductsByDesignerID = asyncHandler(async (req, res) => {
         })
     }
     else{
-        throw new Error('Unable to get the products')
+        res.status(400).json({message: 'Unable to get the products'})
+        
     }
 })
 
@@ -146,7 +148,7 @@ const getProductById = asyncHandler(async (req, res) => {
     }
     else{
 
-        throw new Error('Unable to get the products')
+        res.status(400).json({message: 'Unable to get the products'})
     }
 })
 
@@ -160,7 +162,7 @@ const getProductByCategory = asyncHandler(async (req, res) => {
         })
     }
     else{
-        throw new Error('Unable to get the products')
+        res.status(400).json({message: 'Unable to get the products'})
     }
 })
 
@@ -196,13 +198,13 @@ const placeRating = asyncHandler(async (req,res) => {
         }
         catch(err){
 
-            throw new Error(err)
+            res.status(400).json({message: err})
 
         }
     }
     else {
 
-        throw new Error('Product not found')
+        res.status(400).json({message: 'Unable to get the products'})
 
     }
 })
@@ -227,19 +229,17 @@ const searchProducts = asyncHandler(async (req, res) => {
 })
 
 const topProducts = asyncHandler(async (req, res) => {
+    try{
+        const products = await Product.find({ avgRating: { $gt: 3 } }).sort({avgRating: -1}).limit(20)
 
-    const limit = Number(req.query.limit) || 10
-
-    const page = Number(req.query.page) || 1
-
-    var skip = (page - 1) * limit
-
-    const products = await Product.find({ avgRating: { $gt: 3 } }).sort({avgRating: -1}).limit(10)
-
-    
-    res.json({
-        products: products
-    })
+        
+        res.json({
+            products: products
+        })
+    }
+    catch(err){
+        res.status(400).json({message: err})
+    }
 })
 
 module.exports = {createProduct, deleteProduct, getProductById, updateProduct,

@@ -11,7 +11,7 @@ const registerDesigner = asyncHandler(async (req, res) => {
     const saltRounds = 10;
     if (designerExists) {
 
-        throw new Error('Designer already exist.')
+        res.status(400).json({message: "Designer already exist."})
 	}
     else{
         bcrypt.genSalt(saltRounds, function(err, salt) {
@@ -43,7 +43,7 @@ const registerDesigner = asyncHandler(async (req, res) => {
                 })
                 .catch((err) => {
                     console.log(err)
-                    throw new Error(err)
+                    res.status(400).json({messaeg: err})
                 })
             });
         });
@@ -74,14 +74,14 @@ const loginDesigner = asyncHandler(async (req, res) => {
         }
         else {
 
-            throw new Error('Invalid Password')
+            res.status(400).json({message: 'Invalid Password'})
             
         }
 
     }
 	else {
 
-		throw new Error('Invalid Email')
+		res.status(400).json({message: 'Invalid Email'})
 	}
 })
 
@@ -122,7 +122,7 @@ const topRatedDesigners = asyncHandler(async (req, res) => {
         })
     }
     catch(err){
-        throw new Error(err)
+        res.status(400).json({message: err})
     }
 
 })
@@ -141,7 +141,7 @@ const allProductofDesigners = asyncHandler(async (req, res) => {
     }
     else{
 
-        throw new Error('Unable to get the products')
+        res.status(400).json({message: 'Unable to get the products'})
     }
 })
 

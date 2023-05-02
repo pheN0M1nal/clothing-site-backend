@@ -8,7 +8,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const userExists = await User.findOne({ email })
     const saltRounds = 10
     if (userExists) {
-        throw new Error("User already exist.")
+        res.status(400).json({message: "User already exists"})
     } else {
         bcrypt.genSalt(saltRounds, function (err, salt) {
             bcrypt.hash(password, salt, function (err, password) {
@@ -32,7 +32,7 @@ const registerUser = asyncHandler(async (req, res) => {
                     })
                     .catch((err) => {
                         console.log(err)
-                        throw new Error(err)
+                        res.status(400).json({message: err})
                     })
             })
         })

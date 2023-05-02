@@ -14,8 +14,8 @@ const registerAdmin = asyncHandler(async (req, res) => {
     const saltRounds = 10;
     if (adminExists) {
         
-        res.json({
-            Error: "Admin already exist"
+        res.status(400).json({
+            message: "Admin already exist"
         })
             
 	}
@@ -46,7 +46,9 @@ const registerAdmin = asyncHandler(async (req, res) => {
                 })
                 .catch((err) => {
                     console.log(err)
-                    throw new Error(err)
+                    res.status(400).json({
+                        message: err
+                    })
                 })
             });
         });
@@ -75,14 +77,16 @@ const loginAdmin = asyncHandler(async (req, res) => {
         }
         else {
 
-            throw new Error('Invalid Password')
+            res.status(400).json({
+                message: "Invalid Password"
+            })
             
         }
 
     }
 	else {
 
-        throw new Error('Invalid Email')
+        res.status(400).json({message: "Invalid Email"})
 	}
 })
 
@@ -108,7 +112,7 @@ const deleteAdmin = asyncHandler(async (req, res) => {
     } 
     else {
 
-        throw new Error('Admin not found')
+        res.status(400).json({message: "Admin not found"})
     }
 })
 
@@ -121,7 +125,7 @@ const deleteDesigner = asyncHandler(async (req, res) => {
     } 
     else {
 
-        throw new Error('Designer not found')
+        res.status(400).json({message: "Designer not found"})
     }
 })
   
@@ -130,11 +134,11 @@ const deleteUser = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id)
     if (user) {
         await user.remove()
-        res.json({ message: 'User removed.' })
+        res.status(400).json({ message: 'User removed.' })
     } 
     else {
 
-        throw new Error('User not found')
+        res.status(400).json({message: "User not found"})
     }
 })
 
