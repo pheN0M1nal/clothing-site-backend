@@ -6,8 +6,8 @@ const path = require("path")
 const createProduct = asyncHandler(async (req, res) => {
     console.log("Creating product")
     console.log(process.env.IMAGE_UPLOAD_DIR)
-    const path_ = path.join(path.resolve(), "IMAGE_UPLOAD_DIR")
-    console.log("Path :", path_)
+    const path_ = path.join(path.resolve(), process.env.IMAGE_UPLOAD_DIR)
+
     let form = new multiparty.Form({
         autoFiles: true,
         uploadDir: path_,
@@ -21,6 +21,7 @@ const createProduct = asyncHandler(async (req, res) => {
 
         var img_ = []
         for (img in files.image) {
+            console.log(files.image[0])
             const imagePath = files.image[0].path
             const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
             img_.push(
@@ -64,7 +65,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id)
     if (product) {
         await product.remove()
-        res.status(400).json({ message: "Product removed." })
+        res.status(200).json({ message: "Product removed." })
     } else {
         res.status(400).json({ message: "Product not found" })
     }
