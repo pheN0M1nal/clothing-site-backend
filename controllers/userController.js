@@ -1,5 +1,5 @@
 const User = require("../models/users")
-const Designer = require('../models/designer')
+const Designer = require("../models/designer")
 
 const asyncHandler = require("express-async-handler")
 const bcrypt = require("bcrypt")
@@ -10,7 +10,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const userExists = await User.findOne({ email })
     const saltRounds = 10
     if (userExists) {
-        res.status(400).json({message: "User already exists"})
+        res.status(400).json({ message: "User already exists" })
     } else {
         bcrypt.genSalt(saltRounds, function (err, salt) {
             bcrypt.hash(password, salt, function (err, password) {
@@ -34,7 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
                     })
                     .catch((err) => {
                         console.log(err)
-                        res.status(400).json({message: err})
+                        res.status(400).json({ message: err })
                     })
             })
         })
@@ -51,23 +51,18 @@ const loginUser = asyncHandler(async (req, res) => {
     console.log(user)
     flag = false
 
-    if (designer){
-
-        
+    if (designer) {
         res.json({
             id: designer.id,
-            name: designer.myName,
+            myName: designer.myName,
             email: designer.email,
             accountName: designer.accountName,
             bankName: designer.bankName,
             accountNo: designer.accountNo,
             userType: "Designer",
-            token: generateToken(designer.id)
+            token: generateToken(designer.id),
         })
-
-
-    }
-	else if (user) {
+    } else if (user) {
         const flag = await bcrypt.compare(password, user.password)
 
         if (flag) {
@@ -83,8 +78,7 @@ const loginUser = asyncHandler(async (req, res) => {
                 message: "Provided password is not correct.",
             })
         }
-    } 
-    else {
+    } else {
         res.status(400).json({ message: "No account with this email exists." })
     }
 })
