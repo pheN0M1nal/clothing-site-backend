@@ -12,7 +12,7 @@ app.use(cors())
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use("/images", express.static("../clothing-site-backend/uploads/images"))
+app.use("/images", express.static("./uploads/images"))
 
 const dbURL = process.env.DBCONNECTION
 mongoose.set("strictQuery", false)
