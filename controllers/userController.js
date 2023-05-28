@@ -62,7 +62,7 @@ const loginUser = asyncHandler(async (req, res) => {
             bankName: designer.bankName,
             accountNo: designer.accountNo,
             userType: "Designer",
-            token: generateToken(result.id)
+            token: generateToken(designer.id)
         })
 
 
