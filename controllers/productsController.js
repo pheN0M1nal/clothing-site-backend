@@ -9,7 +9,7 @@ const createProduct = asyncHandler (async (req, res) => {
 
     console.log('Creating product')
     console.log(process.env.IMAGE_UPLOAD_DIR)
-    const path_ = path.join(path.resolve(), 'IMAGE_UPLOAD_DIR')
+    const path_ = path.join(path.resolve(), process.env.IMAGE_UPLOAD_DIR)
     console.log('Path :', path_)
     let form = new multiparty.Form({
         autoFiles: true,
@@ -79,10 +79,12 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
 const updateProduct = asyncHandler(async (req, res) => {
   
-    const {designerID, productName, image, category, price, description, quantity, size} = req.body
+    //const {designerID, productName, image, category, price, description, quantity, size} = req.body
     console.log(req.params.id)
     const product = await Product.findById(req.params.id)
+
     console.log(product)
+    
 
     if(product){
 

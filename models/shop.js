@@ -18,7 +18,7 @@ const ShopSchema = mongoose.Schema(
             unique: 'The shopName is already taken',
             default: ""
         },
-        shopDescription: {
+        description: {
             type: String,
             default: ""
         },
