@@ -55,12 +55,12 @@ const loginUser = asyncHandler(async (req, res) => {
 
         
         res.json({
-            id: desiner.id,
-            name: desiner.myName,
-            email: desiner.email,
-            accountName: desiner.accountName,
-            bankName: desiner.bankName,
-            accountNo: desiner.accountNo,
+            id: designer.id,
+            name: designer.myName,
+            email: designer.email,
+            accountName: designer.accountName,
+            bankName: designer.bankName,
+            accountNo: designer.accountNo,
             userType: "Designer",
             token: generateToken(result.id)
         })
