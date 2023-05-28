@@ -15,10 +15,6 @@ const designersSchema = mongoose.Schema(
             type: String,
             required: true, unique: 'That email is already taken'
         },
-        password: {
-            type: String,
-            required: true
-        },
         accountName: {
             type: String,
             required: true
