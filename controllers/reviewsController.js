@@ -1,5 +1,5 @@
 const Review = require('../models/reviews')
-const expressAsyncHandler = require('express-async-handler')
+const AsyncHandler = require('express-async-handler')
 
 const addReview = asyncHandler(async (req, res) => {
     const {productID, userID, rating, comment} = req.body
@@ -9,8 +9,8 @@ const addReview = asyncHandler(async (req, res) => {
         userID,
         rating,
         comment
-    })
+    }) 
 
 })
 
-module.exports = {}
+module.exports = {addReview}
