@@ -1,4 +1,6 @@
 const User = require("../models/users")
+const Designer = require('../models/designer')
+
 const asyncHandler = require("express-async-handler")
 const bcrypt = require("bcrypt")
 const { generateToken } = require("../utilities/jwt.js")
@@ -45,9 +47,27 @@ const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body
     console.log(email)
     const user = await User.findOne({ email })
+    const designer = await Designer.findOne({ email })
     console.log(user)
     flag = false
-    if (user) {
+
+    if (designer){
+
+        
+        res.json({
+            id: desiner.id,
+            name: desiner.myName,
+            email: desiner.email,
+            accountName: desiner.accountName,
+            bankName: desiner.bankName,
+            accountNo: desiner.accountNo,
+            userType: "Designer",
+            token: generateToken(result.id)
+        })
+
+
+    }
+	else if (user) {
         const flag = await bcrypt.compare(password, user.password)
 
         if (flag) {
@@ -63,7 +83,8 @@ const loginUser = asyncHandler(async (req, res) => {
                 message: "Provided password is not correct.",
             })
         }
-    } else {
+    } 
+    else {
         res.status(400).json({ message: "No account with this email exists." })
     }
 })

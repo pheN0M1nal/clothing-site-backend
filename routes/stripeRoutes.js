@@ -5,7 +5,8 @@ const Express = require('express');
 const router = Express.Router()
 
 const {createCheckoutSession} = require('../controllers/stripeController')
+const {checkout} = require('../Middleware/checkout')
 
-router.post('/create-checkout-session', createCheckoutSession)
+router.post('/create-checkout-session', checkout, createCheckoutSession)
 
 module.exports = router
