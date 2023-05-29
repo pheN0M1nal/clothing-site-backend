@@ -1,9 +1,40 @@
 const User = require("../models/users")
 const Designer = require("../models/designer")
+const jwt = require("jsonwebtoken")
 
 const asyncHandler = require("express-async-handler")
 const bcrypt = require("bcrypt")
 const { generateToken } = require("../utilities/jwt.js")
+
+const getUserDetails = asyncHandler(async (req, res) => {
+    if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith("Bearer")
+    ) {
+        try {
+            var token = req.headers.authorization.split(" ")[1]
+            var decoded = jwt.verify(token, process.env.SECRETKEY)
+            console.log("ID : ", decoded)
+            const designer = await User.findOne({ _id: decoded.id })
+
+            if (!designer) {
+                res.status(401).json({
+                    message: "User as customer don't exi",
+                })
+            }
+
+            res.status(200).json(designer)
+        } catch (err) {
+            res.status(401).json({
+                message: err,
+            })
+        }
+    } else {
+        res.status(401).json({
+            message: "Not logged IN",
+        })
+    }
+})
 
 const registerUser = asyncHandler(async (req, res) => {
     const { myName, email, password } = req.body
@@ -90,4 +121,4 @@ const allUsers = asyncHandler(async (req, res) => {
     })
 })
 
-module.exports = { registerUser, loginUser, allUsers }
+module.exports = { registerUser, getUserDetails, loginUser, allUsers }
