@@ -1,7 +1,6 @@
 const asyncHandler = require('express-async-handler')
 
 const stripe = require('stripe')(process.env.STRIPE_SECRETE_KEY)
-const url = process.env.NODE_ENV
 
 
 const createCheckoutSession = asyncHandler(async (req, res) =>{
