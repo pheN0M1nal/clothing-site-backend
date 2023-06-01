@@ -14,16 +14,16 @@ const getUserDetails = asyncHandler(async (req, res) => {
         try {
             var token = req.headers.authorization.split(" ")[1]
             var decoded = jwt.verify(token, process.env.SECRETKEY)
-            console.log("ID : ", decoded)
-            const designer = await User.findOne({ _id: decoded.id })
 
-            if (!designer) {
+            const user = await User.findOne({ _id: decoded.id })
+
+            if (!user) {
                 res.status(401).json({
-                    message: "User as customer don't exi",
+                    message: "User as customer don't exist",
                 })
+            } else {
+                res.status(200).json(user)
             }
-
-            res.status(200).json(designer)
         } catch (err) {
             res.status(401).json({
                 message: err,

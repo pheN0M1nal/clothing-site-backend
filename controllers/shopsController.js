@@ -1,14 +1,16 @@
 const Designer = require("../models/designer")
 const Shop = require("../models/shop")
 const asyncHandler = require("express-async-handler")
+const jwt = require("jsonwebtoken")
 
 //createShop
 const createShop = asyncHandler(async (req, res) => {
     const { shopName, description } = req.body
     const designerID = req.query.designerID
-    console.log("did", designerID)
+
     const designer = await Designer.findById(designerID)
-    if (designer) {
+    //
+    if (designer._id) {
         const _shop = Shop.findOne({ shopName })
         if (_shop?.shopName) {
             res.status(400).json({ message: "Shop name already exists" })
@@ -33,4 +35,38 @@ const createShop = asyncHandler(async (req, res) => {
     }
 })
 
-module.exports = { createShop }
+//get shop details
+const getShopDetails = asyncHandler(async (req, res) => {
+    if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith("Bearer")
+    ) {
+        try {
+            var token = req.headers.authorization.split(" ")[1]
+            var decoded = jwt.verify(token, process.env.SECRETKEY)
+
+            const designer = await Designer.findOne({ _id: decoded.id })
+            console.log(designer)
+
+            if (!designer) {
+                res.status(402).json({
+                    message: "Designer does'nt exist.",
+                })
+            } else {
+                const shop = await Shop.findOne({ designerID: designer._id })
+
+                res.status(200).json(shop)
+            }
+        } catch (err) {
+            res.status(401).json({
+                message: err,
+            })
+        }
+    } else {
+        res.status(401).json({
+            message: "Not logged IN",
+        })
+    }
+})
+
+module.exports = { createShop, getShopDetails }

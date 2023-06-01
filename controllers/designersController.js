@@ -16,7 +16,7 @@ const getDesignerDetails = asyncHandler(async (req, res) => {
             console.log("ID : ", decoded)
             const designer = await Designer.findOne({ _id: decoded.id })
 
-            res.status(200).json(designer)
+            res.status(200).json({ ...designer._doc, userType: "Designer" })
         } catch (err) {
             console.log(req.headers.authorization)
 
