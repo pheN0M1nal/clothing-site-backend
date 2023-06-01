@@ -1,5 +1,5 @@
 const Review = require('../models/reviews')
-const AsyncHandler = require('express-async-handler')
+const asyncHandler = require('express-async-handler')
 
 const addReview = asyncHandler(async (req, res) => {
     const {productID, userID, rating, comment} = req.body
@@ -10,6 +10,8 @@ const addReview = asyncHandler(async (req, res) => {
         rating,
         comment
     }) 
+
+    await review.save()
 
 })
 
