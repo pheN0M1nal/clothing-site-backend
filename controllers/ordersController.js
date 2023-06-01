@@ -28,16 +28,19 @@ const placeOrder = asyncHandler(async (req, res) => {
 
         if(product.size === 'S'){
             _product.quantity[0] = _product.quantity[0] - product.quantity
+            _product.noOfSales = _product.noOfSales + _product.quantity
             price = product.price + price
             await _product.save()
         }
         else if(product.size ==='M'){
             _product.quantity[1] = _product.quantity[1] - product.quantity
+            _product.noOfSales = _product.noOfSales + _product.quantity
             price = product.price + price
             await _product.save()
         }
         else if(product.size === 'L'){
             _product.quantity[2] = _product.quantity[2] - product.quantity
+            _product.noOfSales = _product.noOfSales + _product.quantity
             price = product.price + price
             await _product.save()
         }
