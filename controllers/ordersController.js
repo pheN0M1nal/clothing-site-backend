@@ -130,7 +130,6 @@ const placeOrder = asyncHandler(async (req, res) => {
 
 const usersAllOrder = asyncHandler(async (req, res) => {
     const id = req.query.id
-    console.log(id)
     const orders = await Order.find({customerID: id})
     if (orders) {
         res.json({
