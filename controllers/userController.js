@@ -83,6 +83,10 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 })
 
+const allOrderofUser = asyncHandler(async (req, res) => {
+    
+})
+
 const allUsers = asyncHandler(async (req, res) => {
     User.find({}).then(function (users) {
         console.log(users.length)

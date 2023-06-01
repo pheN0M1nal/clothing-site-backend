@@ -145,9 +145,28 @@ const getProductByCategory = asyncHandler(async (req, res) => {
 })
 
 const getAllProducts = asyncHandler(async (req, res) => {
+
     const pageSize = 10
     const limit = Number(req.query.limit) || 10
     const page = Number(req.query.page) || 1
+    const { minPrice, maxPrice, rating, category } = req.query;
+    const hasFilters = minPrice || maxPrice || rating || category;
+    console.log(hasFilters)
+
+    // Construct the filter object based on the provided query parameters
+    const filter = {};
+    if (minPrice) {
+        filter.price = { $gte: parseFloat(minPrice) };
+    }
+    if (maxPrice) {
+        filter.price = { ...filter.price, $lte: parseFloat(maxPrice) };
+    }
+    if (rating) {
+        filter.rating = {$gte: parseFloat(rating)};
+    }
+    if (category) {
+        filter.category = category;
+    }
 
     const keyword = req.query.keyword
         ? {
@@ -158,20 +177,29 @@ const getAllProducts = asyncHandler(async (req, res) => {
           }
         : {}
 
-    var skip = (page - 1) * limit
+    
+    if(hasFilters || keyword != {}){
 
-    // await Product.find({})
-    //     .limit(limit)
-    //     .skip(skip)
-    //     .then(function (products) {
-    //         res.send(products)
-    //     })
+        const query = { ...filter, ...keyword };
+        const count = await Product.countDocuments(query)
+        const products = await Product.find(query)
+            .limit(limit)
+            .skip(pageSize * (page - 1))
+        res.json({ products, page, pages: Math.ceil(count / pageSize) })
 
-    const count = await Product.countDocuments({ ...keyword })
-    const products = await Product.find({ ...keyword })
-        .limit(limit)
-        .skip(pageSize * (page - 1))
-    res.json({ products, page, pages: Math.ceil(count / pageSize) })
+
+    }else{
+
+        const count = await Product.countDocuments()
+        const products = await Product.find()
+            .limit(limit)
+            .skip(pageSize * (page - 1))
+        res.json({ products, page, pages: Math.ceil(count / pageSize) })
+
+    }
+
+    
+
 })
 
 const searchProducts = asyncHandler(async (req, res) => {

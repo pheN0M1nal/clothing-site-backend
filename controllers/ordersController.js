@@ -11,7 +11,7 @@ const placeOrder = asyncHandler(async (req, res) => {
     const fullName = req.body.fullName
     const postalCode = req.body.postalCode
     const address = req.body.address
-
+    let price = 0
 
 
 
@@ -28,14 +28,17 @@ const placeOrder = asyncHandler(async (req, res) => {
 
         if(product.size === 'S'){
             _product.quantity[0] = _product.quantity[0] - product.quantity
+            price = product.price + price
             await _product.save()
         }
         else if(product.size ==='M'){
             _product.quantity[1] = _product.quantity[1] - product.quantity
+            price = product.price + price
             await _product.save()
         }
         else if(product.size === 'L'){
             _product.quantity[2] = _product.quantity[2] - product.quantity
+            price = product.price + price
             await _product.save()
         }
         else{
@@ -83,7 +86,7 @@ const placeOrder = asyncHandler(async (req, res) => {
           acc[product.designerID] = [product];
         }
         return acc;
-      }, {});
+    }, {});
 
     // console.log(productsByDesigner)
 
@@ -104,6 +107,7 @@ const placeOrder = asyncHandler(async (req, res) => {
     const order = new Order({
         customerID: userID,
         designerProducts: _designerProducts,
+        price: price,
         fullName: fullName,
         postalCode: postalCode,
         address: address
@@ -122,10 +126,19 @@ const placeOrder = asyncHandler(async (req, res) => {
         })
     }
 
-
-
-
-
 }) 
 
-module.exports = {placeOrder}
+const usersAllOrder = asyncHandler(async (req, res) => {
+    const id = req.query.id
+    console.log(id)
+    const orders = await Order.find({customerID: id})
+    if (orders) {
+        res.json({
+            orders,
+        })
+    } else {
+        res.status(400).json({ message: "Unable to get the orders" })
+    }
+})
+
+module.exports = {placeOrder, usersAllOrder}

@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const {placeOrder} = require('../controllers/ordersController')
+const {placeOrder, usersAllOrder} = require('../controllers/ordersController')
 
 router.post('/placeOrder', placeOrder)
-
+router.get('/usersAllOrder', usersAllOrder)
 
 module.exports = router;
