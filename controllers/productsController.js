@@ -149,8 +149,8 @@ const getAllProducts = asyncHandler(async (req, res) => {
     const pageSize = 10
     const limit = Number(req.query.limit) || 10
     const page = Number(req.query.page) || 1
-    const { minPrice, maxPrice, rating, category } = req.query;
-    const hasFilters = minPrice || maxPrice || rating || category;
+    const { minPrice, maxPrice, avgRating, category } = req.query;
+    const hasFilters = minPrice || maxPrice || avgRating || category;
     console.log(hasFilters)
 
     // Construct the filter object based on the provided query parameters
@@ -161,8 +161,8 @@ const getAllProducts = asyncHandler(async (req, res) => {
     if (maxPrice) {
         filter.price = { ...filter.price, $lte: parseFloat(maxPrice) };
     }
-    if (rating) {
-        filter.rating = {$gte: parseFloat(rating)};
+    if (avgRating) {
+        filter.avgRating = {$gte: parseFloat(avgRating)};
     }
     if (category) {
         filter.category = category;
