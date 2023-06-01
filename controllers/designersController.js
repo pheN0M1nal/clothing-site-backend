@@ -179,7 +179,7 @@ const designerMonthlyData = asyncHandler(async (req, res) => {
             designer:{
                 _id: designer._id,
                 myName: designer.myName,
-                totalNoOfOrders: totalNoOfProductsSales,
+                totalNoOfProductsSales: totalNoOfProductsSales,
                 totalSales: totalSales
             }
         })
