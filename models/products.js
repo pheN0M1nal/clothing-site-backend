@@ -41,18 +41,20 @@ const productsSchema = mongoose.Schema(
             enum: ['S', 'M', 'L'],
         },
         avgRating: {
-            type:{type:Number},
+            type: Number,
             default: 0,
-            enum: [0,1,2,3,4,5]
         },    
         noOfReviews: {
-            type:{type:Number},
+            type: Number,
             default: 0
         },
         noOfSales: {
-            type:{type:Number},
+            type: Number,
             default: 0
-
+        },
+        featured: {
+            type: Boolean,
+            default: false
         }
     },
     {

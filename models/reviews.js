@@ -6,17 +6,23 @@ const reviewSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             auto: true
         },
-        productID : {
+        userID : {
             type : String,
             required : true
         },
-        userID : {
+        myName : {
+            type : String,
+            required : true
+        },
+        productID : {
             type : String,
             required : true
         },
         rating: {
             type: Number,
-            required: true
+            required: true,
+            enum: [0,1,2,3,4,5]
+
         },
         comment: {
             type: String,

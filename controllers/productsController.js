@@ -1,7 +1,8 @@
-const Product = require("../models/products")
+const Product = require('../models/products')
 const asyncHandler = require("express-async-handler")
 const multiparty = require("multiparty")
 const path = require("path")
+const {createCheckoutSession} = require('../controllers/stripeController')
 
 const createProduct = asyncHandler(async (req, res) => {
     console.log("Creating product")
@@ -250,6 +251,31 @@ const topProducts = asyncHandler(async (req, res) => {
     }
 })
 
+const featureProduct = asyncHandler(async (req, res) => {
+    const id = req.query.id
+    const product = await Product.findById(id)
+    console.log(product)
+    const cartItems = [{
+        productName: "Featured Products",
+        description: "Featured products, this feature will give your product more reach result in more sale and profits",
+        _id: id,
+        price: 1000,
+        quantity: 1
+    }]
+
+    req.body.cartItems = cartItems
+
+    if(product)
+    {   
+        product.featured = true
+        await product.save()
+        req.product = product
+        createCheckoutSession(req, res)
+    }
+
+
+}) 
+
 module.exports = {
     createProduct,
     deleteProduct,
@@ -261,4 +287,5 @@ module.exports = {
     placeRating,
     searchProducts,
     topProducts,
+    featureProduct
 }
