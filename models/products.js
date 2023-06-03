@@ -37,20 +37,24 @@ const productsSchema = mongoose.Schema(
         },
         size: {
             type: [String],
-            required: true
+            required: true,
+            enum: ['S', 'M', 'L'],
         },
         avgRating: {
-            type:{type:Number},
-            default: 0
+            type: Number,
+            default: 0,
         },    
         noOfReviews: {
-            type:{type:Number},
+            type: Number,
             default: 0
         },
         noOfSales: {
-            type:{type:Number},
+            type: Number,
             default: 0
-
+        },
+        featured: {
+            type: Boolean,
+            default: false
         }
     },
     {

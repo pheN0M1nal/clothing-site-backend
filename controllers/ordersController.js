@@ -28,16 +28,19 @@ const placeOrder = asyncHandler(async (req, res) => {
 
         if(product.size === 'S'){
             _product.quantity[0] = _product.quantity[0] - product.quantity
+            _product.noOfSales = _product.noOfSales + _product.quantity
             price = product.price + price
             await _product.save()
         }
         else if(product.size ==='M'){
             _product.quantity[1] = _product.quantity[1] - product.quantity
+            _product.noOfSales = _product.noOfSales + _product.quantity
             price = product.price + price
             await _product.save()
         }
         else if(product.size === 'L'){
             _product.quantity[2] = _product.quantity[2] - product.quantity
+            _product.noOfSales = _product.noOfSales + _product.quantity
             price = product.price + price
             await _product.save()
         }
@@ -140,4 +143,27 @@ const usersAllOrder = asyncHandler(async (req, res) => {
     }
 })
 
-module.exports = {placeOrder, usersAllOrder}
+
+const designersAllOrder = asyncHandler(async (req, res) => {
+    const designerID = req.query.id
+    const orders = await Order.find()
+    requiredOrders = []
+    if (orders) {
+        for(var order of orders){
+            for (var data of order.designerProducts){
+                if(data.designerID === designerID){
+                    order.designerProducts = data
+                    requiredOrders.push(order)
+                }
+            }
+        }
+        res.json({
+            orders,
+        })
+    } else {
+        res.status(400).json({ message: "Unable to get the orders" })
+    }
+})
+
+
+module.exports = {placeOrder, usersAllOrder, designersAllOrder}
