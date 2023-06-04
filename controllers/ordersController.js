@@ -52,7 +52,7 @@ const placeOrder = asyncHandler(async (req, res) => {
         
         
         // updating data of products in database 
-        console.log(designer)
+        //console.log(designer)
         designer.totalNoOfOrders = designer.totalNoOfOrders + product.quantity
         designer.totalSales = designer.totalSales + (product.price * product.quantity)
         await designer.save()

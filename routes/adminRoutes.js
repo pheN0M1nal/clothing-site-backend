@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { registerAdmin, loginAdmin, deleteAdmin, deleteDesigner, deleteUser,
-     getAllAdmins, getAllUsers, getAllDesigners } =  require('../controllers/adminController')
+     getAllAdmins, getAllUsers, getAllDesigners, userToAdmin } =  require('../controllers/adminController')
 
 
 router.post('/registerAdmin', registerAdmin)
@@ -12,5 +12,6 @@ router.delete('/deleteUser/:id', deleteUser)
 router.get('/allAdmins', getAllAdmins)
 router.get('/allUsers', getAllUsers)
 router.get('/allDesigners', getAllDesigners)
+router.post('/userToAdmin', userToAdmin)
 
 module.exports = router;
