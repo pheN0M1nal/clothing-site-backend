@@ -21,9 +21,8 @@ const createProduct = asyncHandler(async (req, res) => {
         console.log("files = " + JSON.stringify(files, null, 2))
 
         var img_ = []
-        for (img in files.image) {
-            console.log(files.image[0])
-            const imagePath = files.image[0].path
+        for (var img of files.image) {
+            const imagePath = img.path
             const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
             img_.push(
                 process.env.NODE_ENV === "production"
@@ -178,7 +177,6 @@ const getAllProducts = asyncHandler(async (req, res) => {
           }
         : {}
 
-    
     if(hasFilters || keyword != {}){
 
         const query = { ...filter, ...keyword };
@@ -198,9 +196,6 @@ const getAllProducts = asyncHandler(async (req, res) => {
         res.json({ products, page, pages: Math.ceil(count / pageSize) })
 
     }
-
-    
-
 })
 
 const searchProducts = asyncHandler(async (req, res) => {
