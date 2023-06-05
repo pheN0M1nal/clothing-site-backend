@@ -30,6 +30,18 @@ const getDesignerDetails = asyncHandler(async (req, res) => {
     }
 })
 
+const getDesignerDetailsById = asyncHandler(async (req, res) => {
+    const id = req.params.id
+    console.log(id)
+    const designer = await Designer.findById(id)
+    console.log(designer)
+    if (designer) {
+        res.json(designer)
+    } else {
+        res.status(400).json({ message: "Unable to get the designer" })
+    }
+})
+
 const registerDesigner = asyncHandler(async (req, res) => {
     const { myName, email, accountName, bankName, accountNo } = req.body
     const designerExists = await Designer.findOne({ email })
@@ -206,4 +218,5 @@ module.exports = {
     allProductofDesigners,
     topRatedDesigners,
     designerMonthlyData,
+    getDesignerDetailsById,
 }
