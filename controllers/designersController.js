@@ -182,7 +182,7 @@ const designerMonthlyData = asyncHandler(async (req, res) => {
 
     const orders = await Order.find(filter)
     //console.log(orders)
-
+    var acc = {}
     let totalSales = 0
     let totalNoOfProductsSales = 0
     if (orders) {
@@ -190,6 +190,20 @@ const designerMonthlyData = asyncHandler(async (req, res) => {
             for (var data of order.designerProducts) {
                 if (data.designerID === designerID) {
                     for (var product of data.products) {
+
+                        if(acc[product.productName]){
+                            acc[product.productName] = ({
+                                productName: acc[product.productName].productName,
+                                count: acc[product.productName].count + 1
+                            })
+                        }
+                        else{
+                            acc[product.productName] = {
+                                productName: product.productName,
+                                count: 1
+                            }
+                        }
+
                         totalSales =
                             totalSales + product.price * product.quantity
                         totalNoOfProductsSales =
@@ -198,12 +212,16 @@ const designerMonthlyData = asyncHandler(async (req, res) => {
                 }
             }
         }
+
+        const productsCount = acc
+
         res.json({
             designer: {
                 _id: designer._id,
                 myName: designer.myName,
                 totalNoOfProductsSales: totalNoOfProductsSales,
                 totalSales: totalSales,
+                productsCount: productsCount
             },
         })
     } else {

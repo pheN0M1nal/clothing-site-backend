@@ -1,9 +1,8 @@
-const asyncHandler = require('express-async-handler')
-const Order = require('../models/order')
-const Product = require('../models/products')
-const Designer = require('../models/designer')
-const mongoose = require('mongoose')
-
+const asyncHandler = require("express-async-handler")
+const Order = require("../models/order")
+const Product = require("../models/products")
+const Designer = require("../models/designer")
+const mongoose = require("mongoose")
 
 const placeOrder = asyncHandler(async (req, res) => {
     const products = req.body.cartItems
@@ -13,96 +12,81 @@ const placeOrder = asyncHandler(async (req, res) => {
     const address = req.body.address
     let price = 0
 
-
-
     // updating data database
-    for(var product of products){
-
+    for (var product of products) {
         const productID = product._id
         const _product = await Product.findById(productID)
         const designerID = product.designerID
         const designer = await Designer.findById(designerID)
 
-            
-        // updating data of products in database 
+        // updating data of products in database
 
-        if(product.size === 'S'){
+        if (product.size === "S") {
             _product.quantity[0] = _product.quantity[0] - product.quantity
-            _product.noOfSales = _product.noOfSales + _product.quantity
+            _product.noOfSales = _product.noOfSales + product.quantity
             price = product.price + price
             await _product.save()
-        }
-        else if(product.size ==='M'){
+        } else if (product.size === "M") {
             _product.quantity[1] = _product.quantity[1] - product.quantity
-            _product.noOfSales = _product.noOfSales + _product.quantity
+            _product.noOfSales = _product.noOfSales + product.quantity
             price = product.price + price
             await _product.save()
-        }
-        else if(product.size === 'L'){
+        } else if (product.size === "L") {
             _product.quantity[2] = _product.quantity[2] - product.quantity
-            _product.noOfSales = _product.noOfSales + _product.quantity
+            _product.noOfSales = _product.noOfSales + product.quantity
             price = product.price + price
             await _product.save()
-        }
-        else{
+        } else {
             res.json({
-                message: "Wronge size information"
+                message: "Wronge size information",
             })
         }
-        
-        
-        // updating data of products in database 
-        console.log(designer)
+
+        // updating data of products in database
+        //console.log(designer)
         designer.totalNoOfOrders = designer.totalNoOfOrders + product.quantity
-        designer.totalSales = designer.totalSales + (product.price * product.quantity)
+        designer.totalSales =
+            designer.totalSales + product.price * product.quantity
         await designer.save()
-
-
-
-
     }
 
     // creating product object array
 
-    var _products = req.body.cartItems.map(product => {
+    var _products = req.body.cartItems.map((product) => {
         return {
-
             designerID: product.designerID,
             productID: product._id,
             productName: product.productName,
             image: product.image,
             size: product.size,
             price: product.price,
-            quantity: product.quantity
-
+            quantity: product.quantity,
         }
     })
-
 
     // Creating product array with index/key of designer ID
 
     const productsByDesigner = _products.reduce((acc, product) => {
-
         if (acc[product.designerID]) {
-          acc[product.designerID].push(product);
+            acc[product.designerID].push(product)
         } else {
-          acc[product.designerID] = [product];
+            acc[product.designerID] = [product]
         }
-        return acc;
-    }, {});
+        return acc
+    }, {})
 
     // console.log(productsByDesigner)
 
     // array of designerID and Products arrays
     _designerProducts = []
 
-    for (id in productsByDesigner){
+    for (id in productsByDesigner) {
         const designerID = id
         const products = productsByDesigner[id]
 
         _designerProducts.push({
             designerID,
-            products
+            products,
         })
     }
 
@@ -113,27 +97,23 @@ const placeOrder = asyncHandler(async (req, res) => {
         price: price,
         fullName: fullName,
         postalCode: postalCode,
-        address: address
-
+        address: address,
     })
 
     // console.log(order)
-    try{
+    try {
         await order.save()
         res.json(order)
-
-    }
-    catch(err){
+    } catch (err) {
         res.status(400).json({
-            message: err
+            message: err,
         })
     }
-
-}) 
+})
 
 const usersAllOrder = asyncHandler(async (req, res) => {
     const id = req.query.id
-    const orders = await Order.find({customerID: id})
+    const orders = await Order.find({ customerID: id })
     if (orders) {
         res.json({
             orders,
@@ -143,15 +123,14 @@ const usersAllOrder = asyncHandler(async (req, res) => {
     }
 })
 
-
 const designersAllOrder = asyncHandler(async (req, res) => {
     const designerID = req.query.id
     const orders = await Order.find()
     requiredOrders = []
     if (orders) {
-        for(var order of orders){
-            for (var data of order.designerProducts){
-                if(data.designerID === designerID){
+        for (var order of orders) {
+            for (var data of order.designerProducts) {
+                if (data.designerID === designerID) {
                     order.designerProducts = data
                     requiredOrders.push(order)
                 }
@@ -165,5 +144,4 @@ const designersAllOrder = asyncHandler(async (req, res) => {
     }
 })
 
-
-module.exports = {placeOrder, usersAllOrder, designersAllOrder}
+module.exports = { placeOrder, usersAllOrder, designersAllOrder }

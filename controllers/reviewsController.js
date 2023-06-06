@@ -62,4 +62,27 @@ const addReview = asyncHandler(async (req, res) => {
 
 })
 
-module.exports = {addReview}
+const allReviewsOfProduct = asyncHandler(async(req, res) => {
+
+    try{
+
+        const id = req.query.id
+        const pageSize = 10
+        const limit = Number(req.query.limit) || 10
+        const page = Number(req.query.page) || 1
+        const count = await Review.countDocuments({productID: id})
+        const reviews = await Review.find({productID: id})
+            .limit(limit)
+            .skip(pageSize * (page - 1))
+        res.status(200).json({ reviews, page, count, pages: Math.ceil(count / pageSize) })
+
+    }catch(err){
+        res.status(400).json({
+            message: err
+        })
+    }
+
+
+})
+
+module.exports = {addReview, allReviewsOfProduct}

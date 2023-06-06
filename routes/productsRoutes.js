@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { createProduct, deleteProduct, getProductById, updateProduct, 
         getProductsByDesignerID, getProductByCategory, getAllProducts, 
-        placeRating, searchProducts, topProducts, featureProduct } =  require('../controllers/productsController')
+        placeRating, searchProducts, topProducts, featureProduct,
+        getAllFeatureProduct } =  require('../controllers/productsController')
 
 
 router.post('/createProduct', createProduct)
@@ -16,5 +17,6 @@ router.put('/placeRating/:id/:rating', placeRating)
 router.get('/searchProducts', searchProducts)
 router.get('/topProducts', topProducts)
 router.put('/featureProduct', featureProduct)
+router.get('/getAllFeatureProduct', getAllFeatureProduct)
 
 module.exports = router;

@@ -184,5 +184,35 @@ const getAllDesigners = asyncHandler(async (req, res) => {
     })
 })
 
+const userToAdmin = asyncHandler(async(req, res) => {
+
+    try{
+
+        const id = req.query.id
+        const user = await User.findById(id)
+    
+        const admin = new Admin({
+            myName: user.myName,
+            email: user.email,
+            password: user.password
+        })
+    
+        await admin.save()
+        res.status(200).json({
+            admin
+        })
+
+    }catch(err){
+
+        res.status(400).json({
+            message: err
+        })
+
+    }
+
+
+
+})
+
 module.exports = {registerAdmin, loginAdmin, deleteAdmin, 
-    deleteDesigner, deleteUser, getAllAdmins, getAllUsers, getAllDesigners}
+    deleteDesigner, deleteUser, getAllAdmins, getAllUsers, getAllDesigners, userToAdmin}
