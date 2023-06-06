@@ -3,7 +3,6 @@ const asyncHandler = require("express-async-handler")
 const stripe = require("stripe")(process.env.STRIPE_SECRETE_KEY)
 
 const createCheckoutSession = asyncHandler(async (req, res) => {
-    //console.log(req.body.cartItems)
     const success_url = req.body.success_url
         ? req.body.success_url
         : `${process.env.HOST_URL}/order-place/payment-success`
