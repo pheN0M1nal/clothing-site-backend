@@ -1,14 +1,14 @@
-const Product = require('../models/products')
+const Product = require("../models/products")
 const asyncHandler = require("express-async-handler")
 const multiparty = require("multiparty")
 const path = require("path")
-const {createCheckoutSession} = require('../controllers/stripeController')
+const { createCheckoutSession } = require("../controllers/stripeController")
 
 const createProduct = asyncHandler(async (req, res) => {
     //console.log("Creating product")
     //console.log(process.env.IMAGE_UPLOAD_DIR)
     const path_ = path.join(path.resolve(), process.env.IMAGE_UPLOAD_DIR)
-    console.log('Path :', path_)
+    console.log("Path :", path_)
     let form = new multiparty.Form({
         autoFiles: true,
         uploadDir: path_,
@@ -72,7 +72,6 @@ const deleteProduct = asyncHandler(async (req, res) => {
 })
 
 const updateProduct = asyncHandler(async (req, res) => {
-  
     //const {designerID, productName, image, category, price, description, quantity, size} = req.body
     console.log(req.params.id)
     const product = await Product.findById(req.params.id)
@@ -170,27 +169,26 @@ const getProductByCategory = asyncHandler(async (req, res) => {
 })
 
 const getAllProducts = asyncHandler(async (req, res) => {
-
     const pageSize = 10
     const limit = Number(req.query.limit) || 10
     const page = Number(req.query.page) || 1
-    const { minPrice, maxPrice, avgRating, category } = req.query;
-    const hasFilters = minPrice || maxPrice || avgRating || category;
+    const { minPrice, maxPrice, avgRating, category } = req.query
+    const hasFilters = minPrice || maxPrice || avgRating || category
     console.log(hasFilters)
 
     // Construct the filter object based on the provided query parameters
-    const filter = {};
+    const filter = {}
     if (minPrice) {
-        filter.price = { $gte: parseFloat(minPrice) };
+        filter.price = { $gte: parseFloat(minPrice) }
     }
     if (maxPrice) {
-        filter.price = { ...filter.price, $lte: parseFloat(maxPrice) };
+        filter.price = { ...filter.price, $lte: parseFloat(maxPrice) }
     }
     if (avgRating) {
-        filter.avgRating = {$gte: parseFloat(avgRating)};
+        filter.avgRating = { $gte: parseFloat(avgRating) }
     }
     if (category) {
-        filter.category = category;
+        filter.category = category
     }
 
     const keyword = req.query.keyword
@@ -202,24 +200,19 @@ const getAllProducts = asyncHandler(async (req, res) => {
           }
         : {}
 
-    if(hasFilters || keyword != {}){
-
-        const query = { ...filter, ...keyword };
+    if (hasFilters || keyword != {}) {
+        const query = { ...filter, ...keyword }
         const count = await Product.countDocuments(query)
         const products = await Product.find(query)
             .limit(limit)
             .skip(pageSize * (page - 1))
         res.json({ products, page, pages: Math.ceil(count / pageSize) })
-
-
-    }else{
-
+    } else {
         const count = await Product.countDocuments()
         const products = await Product.find()
             .limit(limit)
             .skip(pageSize * (page - 1))
         res.json({ products, page, pages: Math.ceil(count / pageSize) })
-
     }
 })
 
@@ -275,47 +268,43 @@ const featureProduct = asyncHandler(async (req, res) => {
     const id = req.query.id
     const product = await Product.findById(id)
     console.log(product)
-    const cartItems = [{
-        productName: "Featured Products",
-        description: "Featured products, this feature will give your product more reach result in more sale and profits",
-        _id: id,
-        price: 1000,
-        quantity: 1
-    }]
+    const cartItems = [
+        {
+            productName: "Featured Products",
+            description:
+                "Featured products, this feature will give your product more reach result in more sale and profits",
+            _id: id,
+            price: 1000,
+            quantity: 1,
+        },
+    ]
 
     req.body.cartItems = cartItems
 
-    if(product)
-    {   
+    if (product) {
         product.featured = true
         await product.save()
         req.product = product
         createCheckoutSession(req, res)
     }
-
-}) 
+})
 
 const getAllFeatureProduct = asyncHandler(async (req, res) => {
-
-    try{
-
+    try {
         const pageSize = 10
         const limit = Number(req.query.limit) || 10
         const page = Number(req.query.page) || 1
-        const count = await Product.countDocuments({featured: true})
-        const products = await Product.find({featured: true})
+        const count = await Product.countDocuments({ featured: true })
+        const products = await Product.find({ featured: true })
             .limit(limit)
             .skip(pageSize * (page - 1))
         res.json({ products, page, pages: Math.ceil(count / pageSize) })
-
-    }catch(err){
+    } catch (err) {
         res.json({
-            message: err
+            message: err,
         })
     }
-
-
-}) 
+})
 
 module.exports = {
     createProduct,
@@ -329,5 +318,5 @@ module.exports = {
     searchProducts,
     topProducts,
     featureProduct,
-    getAllFeatureProduct
+    getAllFeatureProduct,
 }
