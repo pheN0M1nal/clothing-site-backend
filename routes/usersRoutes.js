@@ -7,11 +7,15 @@ const {
     loginUser,
     allUsers,
     getUserDetails,
+    updateUser,
+    resetPassword
 } = require("../controllers/userController")
 
 router.post("/registerUser", registerUser)
 router.post("/loginUser", loginUser)
 router.get("/allUsers", protected, protectedForAdmin, allUsers)
+router.put('/updateUser', updateUser)
+router.put('/resetPassword', resetPassword)
 
 router.get("/", getUserDetails)
 

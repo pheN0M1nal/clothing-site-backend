@@ -90,16 +90,78 @@ const loginAdmin = asyncHandler(async (req, res) => {
 	}
 })
 
-const updateaAdmin = asyncHandler(async (req, res) => {
-    const {myName, email, password}  = req.body
-    const admin = Admin.findOne(email)
+const updateAdmin = asyncHandler(async (req, res) => {
+    const {myName}  = req.body
+    const id = req.query.id
+    const admin = await Admin.findById(id)
 
     if(admin){
-        admin.myName = myName
-        admin.email = email
-        admin.password = password
+        if(myName){
+            admin.myName = myName
+        }
 
+        try{
+            await admin.save()
+            res.status(200).json({
+                message: "Admin successfully uodated",
+                admin: admin
+            })
+        }catch(err){
+            res.status(400).json({
+                message: err        
+            })
+        }
+    }else{
+        res.status(400).json({
+            message: "Admin not found"     
+        })
     }
+
+})
+
+const resetPassword = asyncHandler(async(req, res) => {
+    const id = req.query.id
+    const admin = await Admin.findById(id)
+    flag = true
+    if(admin){
+        const {oldPassword, newPassword} = req.body
+        //console.log(oldPassword, newPassword)
+
+        const flag = await bcrypt.compare(oldPassword, admin.password)
+        if(flag){
+            bcrypt.genSalt(10, function (err, salt) {
+                bcrypt.hash(newPassword, salt, function (err, password) {
+                    admin.password = password
+                })
+            })
+
+            try{
+
+                await admin.save() 
+                res.status(200).json({
+                    message: "Password Updated successfully",
+                    admin: admin
+                })
+            }
+            catch(err){
+
+                res.status(400).json({
+                    message: err
+                })
+            }
+        }
+        else{
+            res.status(400).json({
+                message: "Wronge old password"
+            })
+        }
+    }
+    else{
+        res.status(400).json({
+            message: "Admin not found"
+        })
+    }
+
 })
 
 //deleteAdmin
@@ -210,9 +272,7 @@ const userToAdmin = asyncHandler(async(req, res) => {
 
     }
 
-
-
 })
 
-module.exports = {registerAdmin, loginAdmin, deleteAdmin, 
+module.exports = {registerAdmin, loginAdmin, deleteAdmin, updateAdmin, resetPassword,
     deleteDesigner, deleteUser, getAllAdmins, getAllUsers, getAllDesigners, userToAdmin}

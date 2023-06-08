@@ -5,8 +5,8 @@ const path = require("path")
 const {createCheckoutSession} = require('../controllers/stripeController')
 
 const createProduct = asyncHandler(async (req, res) => {
-    console.log("Creating product")
-    console.log(process.env.IMAGE_UPLOAD_DIR)
+    //console.log("Creating product")
+    //console.log(process.env.IMAGE_UPLOAD_DIR)
     const path_ = path.join(path.resolve(), process.env.IMAGE_UPLOAD_DIR)
     console.log('Path :', path_)
     let form = new multiparty.Form({
@@ -31,7 +31,7 @@ const createProduct = asyncHandler(async (req, res) => {
             )
         }
 
-        const product = Product({
+        const product = new Product({
             designerID: fields.designerID[0],
             productName: fields.productName[0],
             image: img_,
@@ -77,37 +77,62 @@ const updateProduct = asyncHandler(async (req, res) => {
     console.log(req.params.id)
     const product = await Product.findById(req.params.id)
 
-    console.log(product)
-    
+    //console.log(product)
+    const path_ = path.join(path.resolve(), process.env.IMAGE_UPLOAD_DIR)
+    console.log('Path :', path_)
+    let form = new multiparty.Form({
+        autoFiles: true,
+        uploadDir: path_,
+    })
 
-    if (product) {
-        ;(product.designerID = designerID),
-            (product.productName = productName),
-            (product.image = image),
-            (product.category = category),
-            (product.price = price),
-            (product.description = description),
-            (product.quantity = quantity),
-            (product.size = size)
+    form.parse(req, async function (err, fields, files) {
+        if (err) return res.send({ error: err.message })
 
-        try {
-            await product.save()
-            res.json({
-                product: product,
-            })
-        } catch (err) {
-            res.status(400).json({ message: err })
+        console.log("fields = " + JSON.stringify(fields, null, 2))
+        console.log("files = " + JSON.stringify(files, null, 2))
+
+        var img_ = []
+        for (var img of files.image) {
+            const imagePath = img.path
+            const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
+            img_.push(
+                process.env.NODE_ENV === "production"
+                    ? "https://storeapis.onrender.com/images/" + fileName
+                    : "http://localhost:5000/images/" + fileName
+            )
         }
-    } else {
-        res.status(400).json({ message: "Product not found" })
-    }
+
+        if (product) {
+            ;   (product.productName = productName[0]),
+                (product.image = img_),
+                (product.category = category[0]),
+                (product.price = price[0]),
+                (product.description = description[0]),
+                (product.quantity = quantity),
+                (product.size = size)
+    
+            try {
+                await product.save()
+                res.json({
+                    product: product,
+                })
+            } catch (err) {
+                res.status(400).json({ message: err })
+            }
+        } else {
+            res.status(400).json({ message: "Product not found" })
+        }
+
+
+    })
+    
 })
 
 const getProductsByDesignerID = asyncHandler(async (req, res) => {
     const id = req.params.id
     const products = await Product.find({ designerID: id })
-    console.log(id)
-    console.log(products)
+    //console.log(id)
+    //console.log(products)
 
     if (products) {
         res.json({
@@ -120,9 +145,9 @@ const getProductsByDesignerID = asyncHandler(async (req, res) => {
 
 const getProductById = asyncHandler(async (req, res) => {
     const id = req.params.id
-    console.log(id)
+    //console.log(id)
     const product = await Product.findById(id)
-    console.log(product)
+    //console.log(product)
     if (product) {
         res.json({
             product,
