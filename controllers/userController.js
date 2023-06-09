@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken")
 const asyncHandler = require("express-async-handler")
 const bcrypt = require("bcrypt")
 const { generateToken } = require("../utilities/jwt.js")
+const { use } = require("../routes/reviewsRoutes")
 
 const getUserDetails = asyncHandler(async (req, res) => {
     if (
@@ -73,13 +74,13 @@ const registerUser = asyncHandler(async (req, res) => {
 })
 
 const loginUser = asyncHandler(async (req, res) => {
-    console.log("User Login")
+    //console.log("User Login")
 
     const { email, password } = req.body
-    console.log(email)
+    //console.log(email)
     const user = await User.findOne({ email })
     const designer = await Designer.findOne({ email })
-    console.log(user)
+    //console.log(user)
     flag = false
 
     if (designer) {
@@ -114,8 +115,81 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 })
 
-const allOrderofUser = asyncHandler(async (req, res) => {
-    
+const updateUser = asyncHandler(async (req, res) => {
+
+    const id = req.query.id
+    const user = await User.findById(id)
+
+    const myName  = req.body.myName
+    console.log(myName)
+
+    if(user){
+
+        user.myName = myName 
+        try{
+            await user.save() 
+            res.status(200).json({
+                message: "User Updated successfully",
+                user: user
+            })
+        }
+        catch(err){
+            res.status(400).json({
+                message: err
+            })
+        }
+    }
+    else{
+        res.status(400).json({
+            message: "User not found"
+        })
+    }
+
+})
+
+const resetPassword = asyncHandler(async(req, res) => {
+    const id = req.query.id
+    const user = await User.findById(id)
+    flag = true
+    if(user){
+        const {oldPassword, newPassword} = req.body
+        //console.log(oldPassword, newPassword)
+
+        const flag = await bcrypt.compare(oldPassword, user.password)
+        if(flag){
+            bcrypt.genSalt(10, function (err, salt) {
+                bcrypt.hash(newPassword, salt, function (err, password) {
+                    user.password = password
+                })
+            })
+
+            try{
+
+                await user.save() 
+                res.status(200).json({
+                    message: "Password Updated successfully",
+                    user: user
+                })
+            }
+            catch(err){
+
+                res.status(400).json({
+                    message: err
+                })
+            }
+        }
+        else{
+            res.status(400).json({
+                message: "Wronge old password"
+            })
+        }
+    }
+    else{
+        res.status(400).json({
+            message: "User not found"
+        })
+    }
+
 })
 
 const allUsers = asyncHandler(async (req, res) => {
@@ -125,4 +199,4 @@ const allUsers = asyncHandler(async (req, res) => {
     })
 })
 
-module.exports = { registerUser, getUserDetails, loginUser, allUsers }
+module.exports = { registerUser, getUserDetails, loginUser, allUsers, updateUser, resetPassword }

@@ -45,7 +45,6 @@ const getDesignerDetailsById = asyncHandler(async (req, res) => {
 const registerDesigner = asyncHandler(async (req, res) => {
     const { myName, email, accountName, bankName, accountNo } = req.body
     const designerExists = await Designer.findOne({ email })
-    const saltRounds = 10
     if (designerExists) {
         res.status(400).json({ message: "Designer already exist." })
     } else {
@@ -84,16 +83,16 @@ const loginDesigner = asyncHandler(async (req, res) => {
     const designer = await Designer.findOne({ email })
     flag = false
     if (designer) {
-        const flag = await bcrypt.compare(password, desiner.password)
+        const flag = await bcrypt.compare(password, designer.password)
 
         if (flag) {
             res.json({
-                _id: desiner.id,
-                name: desiner.myName,
-                email: desiner.email,
-                accountName: desiner.accountName,
-                bankName: desiner.bankName,
-                accountNo: desiner.accountNo,
+                _id: designer.id,
+                name: designer.myName,
+                email: designer.email,
+                accountName: designer.accountName,
+                bankName: designer.bankName,
+                accountNo: designer.accountNo,
                 userType: "Designer",
                 token: generateToken(result.id),
             })
@@ -105,30 +104,70 @@ const loginDesigner = asyncHandler(async (req, res) => {
     }
 })
 
+const updateDesigner = asyncHandler(async(req, res) => {
+    const { myName, accountName, bankName, accountNo } = req.body
+    const id = req.query.id
+    const designer = await Designer.findById(id)
+
+    if(designer){
+
+        if(myName){
+            designer.myName = myName
+        }
+        if(bankName){
+            designer.bankName = bankName
+        }
+        if(accountName){
+            designer.accountName = accountName
+        }
+        if(accountNo){
+            designer.accountNo = accountNo
+        }
+
+        try{
+            await designer.save()
+            res.status(200).json({
+                message: "Designer successfully Updated",
+                designer: designer
+            })
+        }catch(err){
+            res.status(400).json({
+                message: err
+            })
+        }
+    }
+    else{
+        res.status(400).json({
+            message: "Designer does not exist"
+        })
+    }
+
+})
+
 const highestRating = asyncHandler(async (req, res) => {
-    console.log("hello")
+    //console.log("hello")
 
     const designer = await Designer.find({})
         .sort({ avgRatingOfProducts: -1 })
-        .limit(1)
+        .limit(3)
 
     return designer
 })
 
 const highestSales = asyncHandler(async (req, res) => {
-    console.log("hello")
+    //console.log("hello")
 
-    const designer = await Designer.find({}).sort({ totalSales: -1 }).limit(1)
+    const designer = await Designer.find({}).sort({ totalSales: -1 }).limit(3)
 
     return designer
 })
 
 const highestProducts = asyncHandler(async (req, res) => {
-    console.log("hello")
+    //console.log("hello")
 
     const designer = await Designer.find({})
         .sort({ totalNoOfOrders: -1 })
-        .limit(1)
+        .limit(3)
 
     return designer
 })
@@ -237,4 +276,5 @@ module.exports = {
     topRatedDesigners,
     designerMonthlyData,
     getDesignerDetailsById,
+    updateDesigner
 }

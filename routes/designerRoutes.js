@@ -8,6 +8,7 @@ const {
     topRatedDesigners,
     getDesignerDetailsById,
     designerMonthlyData,
+    updateDesigner
 } = require("../controllers/designersController")
 
 router.post("/registerDesigner", registerDesigner)
@@ -24,5 +25,7 @@ router.get("/topRatedDesigners", topRatedDesigners)
 router.get("/designerMonthlyData", designerMonthlyData)
 router.get("/:id", getDesignerDetailsById)
 router.get("/", getDesignerDetails)
+router.put('/updateDesigner', updateDesigner)
+
 
 module.exports = router

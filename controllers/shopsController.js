@@ -69,4 +69,38 @@ const getShopDetails = asyncHandler(async (req, res) => {
     }
 })
 
-module.exports = { createShop, getShopDetails }
+const updateShop = asyncHandler(async (req, res) => {
+    const { shopName, description } = req.body
+    const id = req.query.id
+
+    const shop = await Shop.findById(id)
+    if (shop) {
+        if(shopName){
+            const _shop = await Shop.findOne({ shopName })
+            //console.log(shop)
+            if (_shop) {
+                res.status(400).json({ message: "Shop name already exists" })
+            } else {
+                shop.shopName = shopName
+            }
+        }
+        if(description){
+            shop.description = description
+        }
+
+        try {
+            await shop.save()
+            res.json({
+                message: "Shop successfully Updated",
+                Shop: shop,
+            })
+        } catch (err) {
+            res.status(400).json({ message: err })
+        }
+
+    } else {
+        res.status(400).json({ message: "Shop not found" })
+    }
+})
+
+module.exports = { createShop, getShopDetails, updateShop}
