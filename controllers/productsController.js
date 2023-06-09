@@ -146,7 +146,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
     const pageSize = 10
     const limit = Number(req.query.limit) || 10
     const page = Number(req.query.page) || 1
-    const { minPrice, maxPrice, avgRating, category } = req.query
+    const { minPrice, maxPrice, avgRating, category, featured } = req.query
     const hasFilters = minPrice || maxPrice || avgRating || category
     console.log(hasFilters)
 
@@ -163,6 +163,9 @@ const getAllProducts = asyncHandler(async (req, res) => {
     }
     if (category) {
         filter.category = category
+    }
+    if (featured) {
+        filter.featured = featured
     }
 
     const keyword = req.query.keyword
