@@ -149,12 +149,17 @@ const updateUser = asyncHandler(async (req, res) => {
 
 const resetPassword = asyncHandler(async(req, res) => {
     const id = req.query.id
-    const user = await User.findById(id)
+    var user = await User.findById(id)
+    const designer = await Designer.findById(id)
     flag = true
-    if(user){
+    if(user || designer){
+
         const {oldPassword, newPassword} = req.body
         //console.log(oldPassword, newPassword)
-
+        if(designer){
+            user = await User.findOne({email: designer.email})
+        }
+        
         const flag = await bcrypt.compare(oldPassword, user.password)
         if(flag){
             bcrypt.genSalt(10, function (err, salt) {
