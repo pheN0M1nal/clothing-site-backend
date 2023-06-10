@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken')
 const asyncHandler = require('express-async-handler') 
-const User = require('../models/users.js')
+const User = require('../models/users.js');
+const Admin = require('../models/admin.js');
+const Designer = require('../models/designer.js');
 
 
 const protected = asyncHandler(async (req, res, next) => {
@@ -9,10 +11,20 @@ const protected = asyncHandler(async (req, res, next) => {
 
             var token = req.headers.authorization.split(" ")[1];
             var decoded = jwt.verify(token, process.env.SECRETKEY);
-            console.log("ID : ", decoded)
-            const user = await User.findOne( { id: decoded.id } )
+            //console.log("ID : ", decoded)
+            const user = await User.findOne( { _id: decoded.id } )
+            const admin = await Admin.findOne({ _id: decoded.id})
+            const designer = await Designer.findOne({ _id: decoded.id})
 
-            next()
+            if(user || admin || designer){
+                next()
+            }
+            else{
+                res.status(401).json({
+                    message: err
+                })
+            }
+
             
         }
         catch(err) {
