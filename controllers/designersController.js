@@ -104,44 +104,41 @@ const loginDesigner = asyncHandler(async (req, res) => {
     }
 })
 
-const updateDesigner = asyncHandler(async(req, res) => {
+const updateDesigner = asyncHandler(async (req, res) => {
     const { myName, accountName, bankName, accountNo } = req.body
     const id = req.query.id
     const designer = await Designer.findById(id)
 
-    if(designer){
-
-        if(myName){
+    if (designer) {
+        if (myName) {
             designer.myName = myName
         }
-        if(bankName){
+        if (bankName) {
             designer.bankName = bankName
         }
-        if(accountName){
+        if (accountName) {
             designer.accountName = accountName
         }
-        if(accountNo){
+        if (accountNo) {
             designer.accountNo = accountNo
         }
 
-        try{
+        try {
             await designer.save()
             res.status(200).json({
                 message: "Designer successfully Updated",
-                designer: designer
+                designer: { ...designer._doc, userType: "Designer" },
             })
-        }catch(err){
+        } catch (err) {
             res.status(400).json({
-                message: err
+                message: err,
             })
         }
-    }
-    else{
+    } else {
         res.status(400).json({
-            message: "Designer does not exist"
+            message: "Designer does not exist",
         })
     }
-
 })
 
 const highestRating = asyncHandler(async (req, res) => {
@@ -229,17 +226,16 @@ const designerMonthlyData = asyncHandler(async (req, res) => {
             for (var data of order.designerProducts) {
                 if (data.designerID === designerID) {
                     for (var product of data.products) {
-
-                        if(acc[product.productName]){
-                            acc[product.productName] = ({
-                                productName: acc[product.productName].productName,
-                                count: acc[product.productName].count + 1
-                            })
-                        }
-                        else{
+                        if (acc[product.productName]) {
+                            acc[product.productName] = {
+                                productName:
+                                    acc[product.productName].productName,
+                                count: acc[product.productName].count + 1,
+                            }
+                        } else {
                             acc[product.productName] = {
                                 productName: product.productName,
-                                count: 1
+                                count: 1,
                             }
                         }
 
@@ -260,7 +256,7 @@ const designerMonthlyData = asyncHandler(async (req, res) => {
                 myName: designer.myName,
                 totalNoOfProductsSales: totalNoOfProductsSales,
                 totalSales: totalSales,
-                productsCount: productsCount
+                productsCount: productsCount,
             },
         })
     } else {
@@ -276,5 +272,5 @@ module.exports = {
     topRatedDesigners,
     designerMonthlyData,
     getDesignerDetailsById,
-    updateDesigner
+    updateDesigner,
 }

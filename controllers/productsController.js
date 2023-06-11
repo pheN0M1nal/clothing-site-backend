@@ -21,20 +21,22 @@ const createProduct = asyncHandler(async (req, res) => {
         console.log("files = " + JSON.stringify(files, null, 2))
 
         var img_ = []
-        for (var img of files.image) {
-            const imagePath = img.path
-            const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
-            img_.push(
-                process.env.NODE_ENV === "production"
-                    ? "https://storeapis.onrender.com/images/" + fileName
-                    : "http://localhost:5000/images/" + fileName
-            )
+        if (files.image) {
+            for (var img of files.image) {
+                const imagePath = img.path
+                const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
+                img_.push(
+                    process.env.NODE_ENV === "production"
+                        ? "https://storeapis.onrender.com/images/" + fileName
+                        : "http://localhost:5000/images/" + fileName
+                )
+            }
         }
 
         const product = new Product({
             designerID: fields.designerID[0],
             productName: fields.productName[0],
-            image: img_,
+            image: img_.length === 0 && img_,
             category: fields.category[0],
             price: fields.price[0],
             description: fields.description[0],
