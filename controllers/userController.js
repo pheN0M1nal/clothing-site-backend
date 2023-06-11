@@ -23,7 +23,7 @@ const getUserDetails = asyncHandler(async (req, res) => {
                     message: "User as customer don't exist",
                 })
             } else {
-                res.status(200).json(user)
+                res.status(200).json({ ...user._doc, userType: "Customer" })
             }
         } catch (err) {
             res.status(401).json({
@@ -62,6 +62,7 @@ const registerUser = asyncHandler(async (req, res) => {
                             _id: result.id,
                             userType: "Costumer",
                             token: generateToken(result.id),
+                            userType: "Customer",
                         })
                     })
                     .catch((err) => {
