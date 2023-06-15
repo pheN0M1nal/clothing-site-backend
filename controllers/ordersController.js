@@ -111,6 +111,61 @@ const placeOrder = asyncHandler(async (req, res) => {
     }
 })
 
+const updateOrderStatusToProcessing = asyncHandler(async(req, res) => {
+
+    try{
+        const id = req.query.id
+        const order = await Order.findById(id)
+
+        if(order){
+            order.status = "processing"
+            await order.save()
+            res.status(200).json({
+                message: "Order status updated sucessfully",
+                order: order
+            })
+        }
+        else{
+            res.status(400).json({
+                message: "Order not found"
+            })
+        }
+    }
+    catch(err){
+        res.status(400).json({
+            message: err
+        })
+    }
+
+})
+
+const updateOrderStatusToDelivered = asyncHandler(async(req, res) => {
+    
+    try{
+        const id = req.query.id
+        const order = await Order.findById(id)
+
+        if(order){
+            order.status = "delivered"
+            await order.save()
+            res.status(200).json({
+                message: "Order status updated sucessfully",
+                order: order
+            })
+        }
+        else{
+            res.status(400).json({
+                message: "Order not found"
+            })
+        }
+    }
+    catch(err){
+        res.status(400).json({
+            message: err
+        })
+    }
+})
+
 const usersAllOrder = asyncHandler(async (req, res) => {
     const id = req.query.id
     const orders = await Order.find({ customerID: id })
@@ -144,4 +199,5 @@ const designersAllOrder = asyncHandler(async (req, res) => {
     }
 })
 
-module.exports = { placeOrder, usersAllOrder, designersAllOrder }
+module.exports = { placeOrder, usersAllOrder, designersAllOrder,
+    updateOrderStatusToProcessing, updateOrderStatusToDelivered}
