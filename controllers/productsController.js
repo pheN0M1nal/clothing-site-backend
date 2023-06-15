@@ -21,14 +21,16 @@ const createProduct = asyncHandler(async (req, res) => {
         console.log("files = " + JSON.stringify(files, null, 2))
 
         var img_ = []
-        for (var img of files.image) {
-            const imagePath = img.path
-            const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
-            img_.push(
-                process.env.NODE_ENV === "production"
-                    ? "https://storeapis.onrender.com/images/" + fileName
-                    : "http://localhost:5000/images/" + fileName
-            )
+        if (files.image) {
+            for (var img of files.image) {
+                const imagePath = img.path
+                const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
+                img_.push(
+                    process.env.NODE_ENV === "production"
+                        ? "https://storeapis.onrender.com/images/" + fileName
+                        : "http://localhost:5000/images/" + fileName
+                )
+            }
         }
 
         const product = new Product({
@@ -78,7 +80,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
     //console.log(product)
     const path_ = path.join(path.resolve(), process.env.IMAGE_UPLOAD_DIR)
-    console.log('Path :', path_)
+    console.log("Path :", path_)
     let form = new multiparty.Form({
         autoFiles: true,
         uploadDir: path_,
@@ -91,25 +93,28 @@ const updateProduct = asyncHandler(async (req, res) => {
         console.log("files = " + JSON.stringify(files, null, 2))
 
         var img_ = []
-        for (var img of files.image) {
-            const imagePath = img.path
-            const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
-            img_.push(
-                process.env.NODE_ENV === "production"
-                    ? "https://storeapis.onrender.com/images/" + fileName
-                    : "http://localhost:5000/images/" + fileName
-            )
+
+        if (files.image) {
+            for (var img of files.image) {
+                const imagePath = img.path
+                const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
+                img_.push(
+                    process.env.NODE_ENV === "production"
+                        ? "https://storeapis.onrender.com/images/" + fileName
+                        : "http://localhost:5000/images/" + fileName
+                )
+            }
         }
 
         if (product) {
-            ;   (product.productName = productName[0]),
-                (product.image = img_),
-                (product.category = category[0]),
-                (product.price = price[0]),
-                (product.description = description[0]),
-                (product.quantity = quantity),
-                (product.size = size)
-    
+            ;(product.productName = fields.productName[0]),
+                (product.image = img_.length === 0 ? product.image : img_),
+                (product.category = fields.category[0]),
+                (product.price = fields.price[0]),
+                (product.description = fields.description[0]),
+                (product.quantity = fields.quantity),
+                (product.size = fields.size)
+
             try {
                 await product.save()
                 res.json({
@@ -121,10 +126,7 @@ const updateProduct = asyncHandler(async (req, res) => {
         } else {
             res.status(400).json({ message: "Product not found" })
         }
-
-
     })
-    
 })
 
 const getProductsByDesignerID = asyncHandler(async (req, res) => {
@@ -172,7 +174,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
     const pageSize = 10
     const limit = Number(req.query.limit) || 10
     const page = Number(req.query.page) || 1
-    const { minPrice, maxPrice, avgRating, category } = req.query
+    const { minPrice, maxPrice, avgRating, category, featured } = req.query
     const hasFilters = minPrice || maxPrice || avgRating || category
     console.log(hasFilters)
 
@@ -189,6 +191,9 @@ const getAllProducts = asyncHandler(async (req, res) => {
     }
     if (category) {
         filter.category = category
+    }
+    if (featured) {
+        filter.featured = featured
     }
 
     const keyword = req.query.keyword

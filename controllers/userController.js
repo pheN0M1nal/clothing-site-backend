@@ -23,7 +23,7 @@ const getUserDetails = asyncHandler(async (req, res) => {
                     message: "User as customer don't exist",
                 })
             } else {
-                res.status(200).json(user)
+                res.status(200).json({ ...user._doc, userType: "Customer" })
             }
         } catch (err) {
             res.status(401).json({
@@ -59,9 +59,10 @@ const registerUser = asyncHandler(async (req, res) => {
                         res.json({
                             myName: myName,
                             email: email,
-                            id: result.id,
+                            _id: result.id,
                             userType: "Costumer",
                             token: generateToken(result.id),
+                            userType: "Customer",
                         })
                     })
                     .catch((err) => {
@@ -116,85 +117,73 @@ const loginUser = asyncHandler(async (req, res) => {
 })
 
 const updateUser = asyncHandler(async (req, res) => {
-
     const id = req.query.id
     const user = await User.findById(id)
 
-    const myName  = req.body.myName
+    const myName = req.body.myName
     console.log(myName)
 
-    if(user){
-
-        user.myName = myName 
-        try{
-            await user.save() 
+    if (user) {
+        user.myName = myName
+        try {
+            await user.save()
             res.status(200).json({
                 message: "User Updated successfully",
-                user: user
+                user: user,
             })
-        }
-        catch(err){
+        } catch (err) {
             res.status(400).json({
-                message: err
+                message: err,
             })
         }
-    }
-    else{
+    } else {
         res.status(400).json({
-            message: "User not found"
+            message: "User not found",
         })
     }
-
 })
 
-const resetPassword = asyncHandler(async(req, res) => {
+const resetPassword = asyncHandler(async (req, res) => {
     const id = req.query.id
     var user = await User.findById(id)
     const designer = await Designer.findById(id)
     flag = true
-    if(user || designer){
-
-        const {oldPassword, newPassword} = req.body
+    if (user || designer) {
+        const { oldPassword, newPassword } = req.body
         //console.log(oldPassword, newPassword)
-        if(designer){
-            user = await User.findOne({email: designer.email})
+        if (designer) {
+            user = await User.findOne({ email: designer.email })
         }
-        
+
         const flag = await bcrypt.compare(oldPassword, user.password)
-        if(flag){
+        if (flag) {
             bcrypt.genSalt(10, function (err, salt) {
                 bcrypt.hash(newPassword, salt, function (err, password) {
                     user.password = password
                 })
             })
 
-            try{
-
-                await user.save() 
+            try {
+                await user.save()
                 res.status(200).json({
                     message: "Password Updated successfully",
-                    user: user
+                    user: user,
                 })
-            }
-            catch(err){
-
+            } catch (err) {
                 res.status(400).json({
-                    message: err
+                    message: err,
                 })
             }
-        }
-        else{
+        } else {
             res.status(400).json({
-                message: "Wronge old password"
+                message: "Wronge old password",
             })
         }
-    }
-    else{
+    } else {
         res.status(400).json({
-            message: "User not found"
+            message: "User not found",
         })
     }
-
 })
 
 const allUsers = asyncHandler(async (req, res) => {
@@ -204,4 +193,11 @@ const allUsers = asyncHandler(async (req, res) => {
     })
 })
 
-module.exports = { registerUser, getUserDetails, loginUser, allUsers, updateUser, resetPassword }
+module.exports = {
+    registerUser,
+    getUserDetails,
+    loginUser,
+    allUsers,
+    updateUser,
+    resetPassword,
+}
