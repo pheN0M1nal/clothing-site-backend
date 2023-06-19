@@ -32,7 +32,7 @@ const getUserDetails = asyncHandler(async (req, res) => {
         }
     } else {
         res.status(401).json({
-            message: "Not logged IN",
+            message: "Please login to continue.",
         })
     }
 })
@@ -86,7 +86,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     if (designer) {
         res.json({
-            id: designer.id,
+            _id: designer.id,
             myName: designer.myName,
             email: designer.email,
             accountName: designer.accountName,

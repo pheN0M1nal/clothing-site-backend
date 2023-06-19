@@ -25,7 +25,7 @@ const getDesignerDetails = asyncHandler(async (req, res) => {
         }
     } else {
         res.status(401).json({
-            message: "Not logged IN",
+            message: "Please login to continue.",
         })
     }
 })

@@ -111,57 +111,50 @@ const placeOrder = asyncHandler(async (req, res) => {
     }
 })
 
-const updateOrderStatusToProcessing = asyncHandler(async(req, res) => {
-
-    try{
+const updateOrderStatusToProcessing = asyncHandler(async (req, res) => {
+    try {
         const id = req.query.id
         const order = await Order.findById(id)
 
-        if(order){
+        if (order) {
             order.status = "processing"
             await order.save()
             res.status(200).json({
                 message: "Order status updated sucessfully",
-                order: order
+                order: order,
             })
-        }
-        else{
+        } else {
             res.status(400).json({
-                message: "Order not found"
+                message: "Order not found",
             })
         }
-    }
-    catch(err){
+    } catch (err) {
         res.status(400).json({
-            message: err
+            message: err,
         })
     }
-
 })
 
-const updateOrderStatusToDelivered = asyncHandler(async(req, res) => {
-    
-    try{
+const updateOrderStatusToDelivered = asyncHandler(async (req, res) => {
+    try {
         const id = req.query.id
         const order = await Order.findById(id)
 
-        if(order){
+        if (order) {
             order.status = "delivered"
             await order.save()
             res.status(200).json({
                 message: "Order status updated sucessfully",
-                order: order
+                order: order,
             })
-        }
-        else{
+        } else {
             res.status(400).json({
-                message: "Order not found"
+                message: "Order not found",
             })
         }
-    }
-    catch(err){
+    } catch (err) {
         res.status(400).json({
-            message: err
+            message: err,
         })
     }
 })
@@ -180,7 +173,9 @@ const usersAllOrder = asyncHandler(async (req, res) => {
 
 const designersAllOrder = asyncHandler(async (req, res) => {
     const designerID = req.query.id
+    console.log(designerID)
     const orders = await Order.find()
+    console.log(orders)
     requiredOrders = []
     if (orders) {
         for (var order of orders) {
@@ -191,13 +186,16 @@ const designersAllOrder = asyncHandler(async (req, res) => {
                 }
             }
         }
-        res.json({
-            orders,
-        })
+        res.json({ orders: requiredOrders })
     } else {
         res.status(400).json({ message: "Unable to get the orders" })
     }
 })
 
-module.exports = { placeOrder, usersAllOrder, designersAllOrder,
-    updateOrderStatusToProcessing, updateOrderStatusToDelivered}
+module.exports = {
+    placeOrder,
+    usersAllOrder,
+    designersAllOrder,
+    updateOrderStatusToProcessing,
+    updateOrderStatusToDelivered,
+}
