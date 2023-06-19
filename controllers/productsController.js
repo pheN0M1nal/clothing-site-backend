@@ -27,8 +27,8 @@ const createProduct = asyncHandler(async (req, res) => {
                 const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
                 img_.push(
                     process.env.NODE_ENV === "production"
-                        ? "https://storeapis.onrender.com/images/" + fileName
-                        : "http://localhost:5000/images/" + fileName
+                        ? `${process.env.NODE_ENV_LIVE}/images/` + fileName
+                        : `${process.env.NODE_ENV}/images/` + fileName
                 )
             }
         }
