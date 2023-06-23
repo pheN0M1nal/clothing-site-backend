@@ -1,19 +1,19 @@
-const User = require("../models/users")
-const Designer = require("../models/designer")
-const jwt = require("jsonwebtoken")
+const User = require('../models/users')
+const Designer = require('../models/designer')
+const jwt = require('jsonwebtoken')
 
-const asyncHandler = require("express-async-handler")
-const bcrypt = require("bcrypt")
-const { generateToken } = require("../utilities/jwt.js")
-const { use } = require("../routes/reviewsRoutes")
+const asyncHandler = require('express-async-handler')
+const bcrypt = require('bcrypt')
+const { generateToken } = require('../utilities/jwt.js')
+const { use } = require('../routes/reviewsRoutes')
 
 const getUserDetails = asyncHandler(async (req, res) => {
     if (
         req.headers.authorization &&
-        req.headers.authorization.startsWith("Bearer")
+        req.headers.authorization.startsWith('Bearer')
     ) {
         try {
-            var token = req.headers.authorization.split(" ")[1]
+            var token = req.headers.authorization.split(' ')[1]
             var decoded = jwt.verify(token, process.env.SECRETKEY)
 
             const user = await User.findOne({ _id: decoded.id })
@@ -23,7 +23,7 @@ const getUserDetails = asyncHandler(async (req, res) => {
                     message: "User as customer don't exist",
                 })
             } else {
-                res.status(200).json({ ...user._doc, userType: "Customer" })
+                res.status(200).json({ ...user._doc, userType: 'Customer' })
             }
         } catch (err) {
             res.status(401).json({
@@ -32,7 +32,7 @@ const getUserDetails = asyncHandler(async (req, res) => {
         }
     } else {
         res.status(401).json({
-            message: "Please login to continue.",
+            message: 'Please login to continue.',
         })
     }
 })
@@ -42,7 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
     const userExists = await User.findOne({ email })
     const saltRounds = 10
     if (userExists) {
-        res.status(400).json({ message: "User already exists" })
+        res.status(400).json({ message: 'User already exists' })
     } else {
         bcrypt.genSalt(saltRounds, function (err, salt) {
             bcrypt.hash(password, salt, function (err, password) {
@@ -60,9 +60,9 @@ const registerUser = asyncHandler(async (req, res) => {
                             myName: myName,
                             email: email,
                             _id: result.id,
-                            userType: "Costumer",
+                            userType: 'Costumer',
                             token: generateToken(result.id),
-                            userType: "Customer",
+                            userType: 'Customer',
                         })
                     })
                     .catch((err) => {
@@ -92,7 +92,7 @@ const loginUser = asyncHandler(async (req, res) => {
             accountName: designer.accountName,
             bankName: designer.bankName,
             accountNo: designer.accountNo,
-            userType: "Designer",
+            userType: 'Designer',
             token: generateToken(designer.id),
         })
     } else if (user) {
@@ -102,17 +102,17 @@ const loginUser = asyncHandler(async (req, res) => {
             res.json({
                 myName: user.myName,
                 email: user.email,
-                id: user.id,
-                userType: "Costumer",
+                _id: user.id,
+                userType: 'Costumer',
                 token: generateToken(user.id),
             })
         } else {
             res.status(400).json({
-                message: "Provided password is not correct.",
+                message: 'Provided password is not correct.',
             })
         }
     } else {
-        res.status(400).json({ message: "No account with this email exists." })
+        res.status(400).json({ message: 'No account with this email exists.' })
     }
 })
 
@@ -128,8 +128,8 @@ const updateUser = asyncHandler(async (req, res) => {
         try {
             await user.save()
             res.status(200).json({
-                message: "User Updated successfully",
-                user: user,
+                message: 'User Updated successfully',
+                user: { ...user._doc, userType: 'Customer' },
             })
         } catch (err) {
             res.status(400).json({
@@ -138,7 +138,7 @@ const updateUser = asyncHandler(async (req, res) => {
         }
     } else {
         res.status(400).json({
-            message: "User not found",
+            message: 'User not found',
         })
     }
 })
@@ -166,7 +166,7 @@ const resetPassword = asyncHandler(async (req, res) => {
             try {
                 await user.save()
                 res.status(200).json({
-                    message: "Password Updated successfully",
+                    message: 'Password Updated successfully',
                     user: user,
                 })
             } catch (err) {
@@ -176,12 +176,12 @@ const resetPassword = asyncHandler(async (req, res) => {
             }
         } else {
             res.status(400).json({
-                message: "Wronge old password",
+                message: 'Wronge old password',
             })
         }
     } else {
         res.status(400).json({
-            message: "User not found",
+            message: 'User not found',
         })
     }
 })

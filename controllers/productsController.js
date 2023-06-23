@@ -1,14 +1,14 @@
-const Product = require("../models/products")
-const asyncHandler = require("express-async-handler")
-const multiparty = require("multiparty")
-const path = require("path")
-const { createCheckoutSession } = require("../controllers/stripeController")
+const Product = require('../models/products')
+const asyncHandler = require('express-async-handler')
+const multiparty = require('multiparty')
+const path = require('path')
+const { createCheckoutSession } = require('../controllers/stripeController')
 
 const createProduct = asyncHandler(async (req, res) => {
     //console.log("Creating product")
     //console.log(process.env.IMAGE_UPLOAD_DIR)
     const path_ = path.join(path.resolve(), process.env.IMAGE_UPLOAD_DIR)
-    console.log("Path :", path_)
+    console.log('Path :', path_)
     let form = new multiparty.Form({
         autoFiles: true,
         uploadDir: path_,
@@ -17,16 +17,16 @@ const createProduct = asyncHandler(async (req, res) => {
     form.parse(req, async function (err, fields, files) {
         if (err) return res.send({ error: err.message })
 
-        console.log("fields = " + JSON.stringify(fields, null, 2))
-        console.log("files = " + JSON.stringify(files, null, 2))
+        console.log('fields = ' + JSON.stringify(fields, null, 2))
+        console.log('files = ' + JSON.stringify(files, null, 2))
 
         var img_ = []
         if (files.image) {
             for (var img of files.image) {
                 const imagePath = img.path
-                const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
+                const fileName = imagePath.slice(imagePath.lastIndexOf('/') + 1)
                 img_.push(
-                    process.env.NODE_ENV === "production"
+                    process.env.NODE_ENV === 'production'
                         ? `${process.env.HOST_URL_LIVE}/images/` + fileName
                         : `${process.env.HOST_URL}/images/` + fileName
                 )
@@ -67,9 +67,9 @@ const deleteProduct = asyncHandler(async (req, res) => {
     const product = await Product.findById(req.params.id)
     if (product) {
         await product.remove()
-        res.status(200).json({ message: "Product removed." })
+        res.status(200).json({ message: 'Product removed.' })
     } else {
-        res.status(400).json({ message: "Product not found" })
+        res.status(400).json({ message: 'Product not found' })
     }
 })
 
@@ -80,7 +80,7 @@ const updateProduct = asyncHandler(async (req, res) => {
 
     //console.log(product)
     const path_ = path.join(path.resolve(), process.env.IMAGE_UPLOAD_DIR)
-    console.log("Path :", path_)
+    console.log('Path :', path_)
     let form = new multiparty.Form({
         autoFiles: true,
         uploadDir: path_,
@@ -89,19 +89,19 @@ const updateProduct = asyncHandler(async (req, res) => {
     form.parse(req, async function (err, fields, files) {
         if (err) return res.send({ error: err.message })
 
-        console.log("fields = " + JSON.stringify(fields, null, 2))
-        console.log("files = " + JSON.stringify(files, null, 2))
+        console.log('fields = ' + JSON.stringify(fields, null, 2))
+        console.log('files = ' + JSON.stringify(files, null, 2))
 
         var img_ = []
 
         if (files.image) {
             for (var img of files.image) {
                 const imagePath = img.path
-                const fileName = imagePath.slice(imagePath.lastIndexOf("/") + 1)
+                const fileName = imagePath.slice(imagePath.lastIndexOf('/') + 1)
                 img_.push(
-                    process.env.NODE_ENV === "production"
-                        ? "https://storeapis.onrender.com/images/" + fileName
-                        : "http://localhost:5000/images/" + fileName
+                    process.env.NODE_ENV === 'production'
+                        ? `${process.env.HOST_URL_LIVE}/images/` + fileName
+                        : `${process.env.HOST_URL}/images/` + fileName
                 )
             }
         }
@@ -124,7 +124,7 @@ const updateProduct = asyncHandler(async (req, res) => {
                 res.status(400).json({ message: err })
             }
         } else {
-            res.status(400).json({ message: "Product not found" })
+            res.status(400).json({ message: 'Product not found' })
         }
     })
 })
@@ -140,7 +140,7 @@ const getProductsByDesignerID = asyncHandler(async (req, res) => {
             products,
         })
     } else {
-        res.status(400).json({ message: "Unable to get the products" })
+        res.status(400).json({ message: 'Unable to get the products' })
     }
 })
 
@@ -154,7 +154,7 @@ const getProductById = asyncHandler(async (req, res) => {
             product,
         })
     } else {
-        res.status(400).json({ message: "Unable to get the products" })
+        res.status(400).json({ message: 'Unable to get the products' })
     }
 })
 
@@ -166,13 +166,13 @@ const getProductByCategory = asyncHandler(async (req, res) => {
             products,
         })
     } else {
-        res.status(400).json({ message: "Unable to get the products" })
+        res.status(400).json({ message: 'Unable to get the products' })
     }
 })
 
 const getAllProducts = asyncHandler(async (req, res) => {
     const pageSize = 10
-    const limit = Number(req.query.limit) || 10
+    const limit = Number(req.query.limit) || 100
     const page = Number(req.query.page) || 1
     const { minPrice, maxPrice, avgRating, category, featured } = req.query
     const hasFilters = minPrice || maxPrice || avgRating || category
@@ -200,7 +200,7 @@ const getAllProducts = asyncHandler(async (req, res) => {
         ? {
               productName: {
                   $regex: req.query.keyword,
-                  $options: "i",
+                  $options: 'i',
               },
           }
         : {}
@@ -251,7 +251,7 @@ const placeRating = asyncHandler(async (req, res) => {
             res.status(400).json({ message: err })
         }
     } else {
-        res.status(400).json({ message: "Unable to get the products" })
+        res.status(400).json({ message: 'Unable to get the products' })
     }
 })
 
@@ -275,9 +275,9 @@ const featureProduct = asyncHandler(async (req, res) => {
     console.log(product)
     const cartItems = [
         {
-            productName: "Featured Products",
+            productName: 'Featured Products',
             description:
-                "Featured products, this feature will give your product more reach result in more sale and profits",
+                'Featured products, this feature will give your product more reach result in more sale and profits',
             _id: id,
             price: 1000,
             quantity: 1,
